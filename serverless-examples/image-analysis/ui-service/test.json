@@ -1,0 +1,6 @@
+{
+    "action": "download",
+    "msg": {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com"
+    }
+}

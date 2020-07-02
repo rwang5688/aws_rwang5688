@@ -1,0 +1,978 @@
+{
+  "url": "http://kipoxezxt.ai-as-a-service.s3-website-eu-west-1.amazonaws.com/",
+  "stat": "analyzed",
+  "downloadResults": [
+    {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com/cat1.png",
+      "stat": "ok"
+    },
+    {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com/cat2.jpg",
+      "stat": "ok"
+    },
+    {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com/cat3.jpg",
+      "stat": "ok"
+    },
+    {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com/cat4.jpg",
+      "stat": "ok"
+    },
+    {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com/dog1.jpg",
+      "stat": "ok"
+    },
+    {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com/dog2.jpg",
+      "stat": "ok"
+    },
+    {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com/dog3.jpeg",
+      "stat": "ok"
+    },
+    {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com/dog4.jpg",
+      "stat": "ok"
+    }
+  ],
+  "analysisResults": [
+    {
+      "image": "kipoxezxt.ai-as-a-service.s3-website-eu-west-1.amazonaws.com/2c495780-b8ef-11ea-8505-f9a21d2e8bbd",
+      "labels": [
+        {
+          "Name": "Animal",
+          "Confidence": 96.17815399169922,
+          "Instances": [],
+          "Parents": []
+        },
+        {
+          "Name": "Pet",
+          "Confidence": 96.17815399169922,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "Cat",
+          "Confidence": 96.17815399169922,
+          "Instances": [
+            {
+              "BoundingBox": {
+                "Width": 0.776246964931488,
+                "Height": 0.961625337600708,
+                "Left": 0.01635168306529522,
+                "Top": 0.008933048695325851
+              },
+              "Confidence": 96.17815399169922
+            }
+          ],
+          "Parents": [
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Mammal"
+            }
+          ]
+        },
+        {
+          "Name": "Mammal",
+          "Confidence": 96.17815399169922,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "Kitten",
+          "Confidence": 93.30976104736328,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Cat"
+            },
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Mammal"
+            }
+          ]
+        },
+        {
+          "Name": "Manx",
+          "Confidence": 82.45576477050781,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Cat"
+            },
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Mammal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image": "kipoxezxt.ai-as-a-service.s3-website-eu-west-1.amazonaws.com/2c4e3980-b8ef-11ea-8505-f9a21d2e8bbd",
+      "labels": [
+        {
+          "Name": "Puppy",
+          "Confidence": 99.4940185546875,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Mammal"
+            },
+            {
+              "Name": "Canine"
+            },
+            {
+              "Name": "Dog"
+            },
+            {
+              "Name": "Pet"
+            }
+          ]
+        },
+        {
+          "Name": "Mammal",
+          "Confidence": 99.4940185546875,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "Canine",
+          "Confidence": 99.4940185546875,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Mammal"
+            },
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "Pet",
+          "Confidence": 99.4940185546875,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "Animal",
+          "Confidence": 99.4940185546875,
+          "Instances": [],
+          "Parents": []
+        },
+        {
+          "Name": "Dog",
+          "Confidence": 99.4940185546875,
+          "Instances": [
+            {
+              "BoundingBox": {
+                "Width": 0.555580735206604,
+                "Height": 0.8617411851882935,
+                "Left": 0.19151626527309418,
+                "Top": 0.091391921043396
+              },
+              "Confidence": 94.33960723876953
+            }
+          ],
+          "Parents": [
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Mammal"
+            },
+            {
+              "Name": "Canine"
+            },
+            {
+              "Name": "Pet"
+            }
+          ]
+        },
+        {
+          "Name": "Grass",
+          "Confidence": 98.00484466552734,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Plant"
+            }
+          ]
+        },
+        {
+          "Name": "Plant",
+          "Confidence": 98.00484466552734,
+          "Instances": [],
+          "Parents": []
+        }
+      ]
+    },
+    {
+      "image": "kipoxezxt.ai-as-a-service.s3-website-eu-west-1.amazonaws.com/2c551750-b8ef-11ea-8505-f9a21d2e8bbd",
+      "labels": [
+        {
+          "Name": "Cat",
+          "Confidence": 93.38502502441406,
+          "Instances": [
+            {
+              "BoundingBox": {
+                "Width": 0.6396602988243103,
+                "Height": 0.42231062054634094,
+                "Left": 0.2443639636039734,
+                "Top": 0.39180639386177063
+              },
+              "Confidence": 92.28136444091797
+            },
+            {
+              "BoundingBox": {
+                "Width": 0.30847981572151184,
+                "Height": 0.6302649974822998,
+                "Left": 0.14718370139598846,
+                "Top": 0.022750668227672577
+              },
+              "Confidence": 88.1559829711914
+            }
+          ],
+          "Parents": [
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Mammal"
+            }
+          ]
+        },
+        {
+          "Name": "Animal",
+          "Confidence": 93.38502502441406,
+          "Instances": [],
+          "Parents": []
+        },
+        {
+          "Name": "Pet",
+          "Confidence": 93.38502502441406,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "Mammal",
+          "Confidence": 93.38502502441406,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "Abyssinian",
+          "Confidence": 89.02562713623047,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Cat"
+            },
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Mammal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image": "kipoxezxt.ai-as-a-service.s3-website-eu-west-1.amazonaws.com/2c58c0d0-b8ef-11ea-8505-f9a21d2e8bbd",
+      "labels": [
+        {
+          "Name": "Pet",
+          "Confidence": 97.06594848632812,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "Animal",
+          "Confidence": 97.06594848632812,
+          "Instances": [],
+          "Parents": []
+        },
+        {
+          "Name": "Mammal",
+          "Confidence": 97.06594848632812,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "Dog",
+          "Confidence": 97.06594848632812,
+          "Instances": [
+            {
+              "BoundingBox": {
+                "Width": 0.23700456321239471,
+                "Height": 0.5080325603485107,
+                "Left": 0.3591906726360321,
+                "Top": 0.09315160661935806
+              },
+              "Confidence": 97.06594848632812
+            },
+            {
+              "BoundingBox": {
+                "Width": 0.2624211311340332,
+                "Height": 0.5110268592834473,
+                "Left": 0.5505189895629883,
+                "Top": 0.1337725669145584
+              },
+              "Confidence": 89.36344909667969
+            }
+          ],
+          "Parents": [
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Canine"
+            },
+            {
+              "Name": "Mammal"
+            }
+          ]
+        },
+        {
+          "Name": "Canine",
+          "Confidence": 97.06594848632812,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Mammal"
+            }
+          ]
+        },
+        {
+          "Name": "Hound",
+          "Confidence": 94.06204223632812,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Dog"
+            },
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Canine"
+            },
+            {
+              "Name": "Mammal"
+            }
+          ]
+        },
+        {
+          "Name": "Nature",
+          "Confidence": 84.02665710449219,
+          "Instances": [],
+          "Parents": []
+        },
+        {
+          "Name": "Outdoors",
+          "Confidence": 81.6033706665039,
+          "Instances": [],
+          "Parents": []
+        }
+      ]
+    },
+    {
+      "image": "kipoxezxt.ai-as-a-service.s3-website-eu-west-1.amazonaws.com/2c63bd50-b8ef-11ea-8505-f9a21d2e8bbd",
+      "labels": [
+        {
+          "Name": "Pet",
+          "Confidence": 98.35298919677734,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "Mammal",
+          "Confidence": 98.35298919677734,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "Canine",
+          "Confidence": 98.35298919677734,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Mammal"
+            }
+          ]
+        },
+        {
+          "Name": "Animal",
+          "Confidence": 98.35298919677734,
+          "Instances": [],
+          "Parents": []
+        },
+        {
+          "Name": "Dog",
+          "Confidence": 98.35298919677734,
+          "Instances": [
+            {
+              "BoundingBox": {
+                "Width": 0.5341935157775879,
+                "Height": 0.8491988182067871,
+                "Left": 0.008257914334535599,
+                "Top": 0.12314285337924957
+              },
+              "Confidence": 98.35298919677734
+            },
+            {
+              "BoundingBox": {
+                "Width": 0.5038220882415771,
+                "Height": 0.6486581563949585,
+                "Left": 0.3885701298713684,
+                "Top": 0.3436838388442993
+              },
+              "Confidence": 98.21070861816406
+            },
+            {
+              "BoundingBox": {
+                "Width": 0.5199056267738342,
+                "Height": 0.8879689574241638,
+                "Left": 0.21899455785751343,
+                "Top": 0.094693623483181
+              },
+              "Confidence": 94.1249771118164
+            }
+          ],
+          "Parents": [
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Mammal"
+            },
+            {
+              "Name": "Canine"
+            }
+          ]
+        },
+        {
+          "Name": "Golden Retriever",
+          "Confidence": 96.93498992919922,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Dog"
+            },
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Mammal"
+            },
+            {
+              "Name": "Canine"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image": "kipoxezxt.ai-as-a-service.s3-website-eu-west-1.amazonaws.com/2c796830-b8ef-11ea-8505-f9a21d2e8bbd",
+      "labels": [
+        {
+          "Name": "Pet",
+          "Confidence": 99.75138854980469,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "Manx",
+          "Confidence": 99.75138854980469,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Cat"
+            },
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Mammal"
+            }
+          ]
+        },
+        {
+          "Name": "Animal",
+          "Confidence": 99.75138854980469,
+          "Instances": [],
+          "Parents": []
+        },
+        {
+          "Name": "Cat",
+          "Confidence": 99.75138854980469,
+          "Instances": [
+            {
+              "BoundingBox": {
+                "Width": 0.21257352828979492,
+                "Height": 0.35747814178466797,
+                "Left": 0.05505077913403511,
+                "Top": 0.5934878587722778
+              },
+              "Confidence": 96.47211456298828
+            },
+            {
+              "BoundingBox": {
+                "Width": 0.15460661053657532,
+                "Height": 0.45513081550598145,
+                "Left": 0.2446206510066986,
+                "Top": 0.49543750286102295
+              },
+              "Confidence": 96.0100326538086
+            },
+            {
+              "BoundingBox": {
+                "Width": 0.14852911233901978,
+                "Height": 0.2900799512863159,
+                "Left": 0.7862234115600586,
+                "Top": 0.6562865972518921
+              },
+              "Confidence": 95.8463134765625
+            },
+            {
+              "BoundingBox": {
+                "Width": 0.11426423490047455,
+                "Height": 0.42502665519714355,
+                "Left": 0.584789514541626,
+                "Top": 0.5225152969360352
+              },
+              "Confidence": 95.81751251220703
+            },
+            {
+              "BoundingBox": {
+                "Width": 0.10164332389831543,
+                "Height": 0.46269726753234863,
+                "Left": 0.38485661149024963,
+                "Top": 0.4917035698890686
+              },
+              "Confidence": 94.57080841064453
+            },
+            {
+              "BoundingBox": {
+                "Width": 0.10545821487903595,
+                "Height": 0.37915241718292236,
+                "Left": 0.6900827288627625,
+                "Top": 0.5637347102165222
+              },
+              "Confidence": 94.1439437866211
+            },
+            {
+              "BoundingBox": {
+                "Width": 0.10728345066308975,
+                "Height": 0.4467102289199829,
+                "Left": 0.48190420866012573,
+                "Top": 0.5096650719642639
+              },
+              "Confidence": 92.09529113769531
+            },
+            {
+              "BoundingBox": {
+                "Width": 0.148142471909523,
+                "Height": 0.42572712898254395,
+                "Left": 0.512816309928894,
+                "Top": 0.5166393518447876
+              },
+              "Confidence": 63.6357421875
+            }
+          ],
+          "Parents": [
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Mammal"
+            }
+          ]
+        },
+        {
+          "Name": "Mammal",
+          "Confidence": 99.75138854980469,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "Kitten",
+          "Confidence": 80.84516906738281,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Cat"
+            },
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Mammal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image": "kipoxezxt.ai-as-a-service.s3-website-eu-west-1.amazonaws.com/2c85eb50-b8ef-11ea-8505-f9a21d2e8bbd",
+      "labels": [
+        {
+          "Name": "Mammal",
+          "Confidence": 99.37506103515625,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "Kitten",
+          "Confidence": 99.37506103515625,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Mammal"
+            },
+            {
+              "Name": "Cat"
+            }
+          ]
+        },
+        {
+          "Name": "Pet",
+          "Confidence": 99.37506103515625,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "Animal",
+          "Confidence": 99.37506103515625,
+          "Instances": [],
+          "Parents": []
+        },
+        {
+          "Name": "Cat",
+          "Confidence": 99.37506103515625,
+          "Instances": [
+            {
+              "BoundingBox": {
+                "Width": 0.6612231731414795,
+                "Height": 0.9675929546356201,
+                "Left": 0.13235610723495483,
+                "Top": 0.01803950034081936
+              },
+              "Confidence": 95.14813995361328
+            }
+          ],
+          "Parents": [
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Mammal"
+            }
+          ]
+        },
+        {
+          "Name": "Manx",
+          "Confidence": 80.48473358154297,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Mammal"
+            },
+            {
+              "Name": "Cat"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image": "kipoxezxt.ai-as-a-service.s3-website-eu-west-1.amazonaws.com/2c8dda90-b8ef-11ea-8505-f9a21d2e8bbd",
+      "labels": [
+        {
+          "Name": "Dog",
+          "Confidence": 99.92478942871094,
+          "Instances": [
+            {
+              "BoundingBox": {
+                "Width": 0.8861241340637207,
+                "Height": 0.9677956104278564,
+                "Left": 0.02998376451432705,
+                "Top": 0.02314871735870838
+              },
+              "Confidence": 99.53364562988281
+            }
+          ],
+          "Parents": [
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Mammal"
+            },
+            {
+              "Name": "Canine"
+            }
+          ]
+        },
+        {
+          "Name": "Animal",
+          "Confidence": 99.92478942871094,
+          "Instances": [],
+          "Parents": []
+        },
+        {
+          "Name": "Pet",
+          "Confidence": 99.92478942871094,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "Canine",
+          "Confidence": 99.92478942871094,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Mammal"
+            }
+          ]
+        },
+        {
+          "Name": "Mammal",
+          "Confidence": 99.92478942871094,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Animal"
+            }
+          ]
+        },
+        {
+          "Name": "German Shepherd",
+          "Confidence": 99.92478942871094,
+          "Instances": [],
+          "Parents": [
+            {
+              "Name": "Dog"
+            },
+            {
+              "Name": "Animal"
+            },
+            {
+              "Name": "Pet"
+            },
+            {
+              "Name": "Mammal"
+            },
+            {
+              "Name": "Canine"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "wordCloudList": [
+    [
+      "Animal",
+      8
+    ],
+    [
+      "Pet",
+      8
+    ],
+    [
+      "Cat",
+      4
+    ],
+    [
+      "Mammal",
+      8
+    ],
+    [
+      "Kitten",
+      3
+    ],
+    [
+      "Manx",
+      3
+    ],
+    [
+      "Puppy",
+      1
+    ],
+    [
+      "Canine",
+      4
+    ],
+    [
+      "Dog",
+      4
+    ],
+    [
+      "Grass",
+      1
+    ],
+    [
+      "Plant",
+      1
+    ],
+    [
+      "Abyssinian",
+      1
+    ],
+    [
+      "Hound",
+      1
+    ],
+    [
+      "Nature",
+      1
+    ],
+    [
+      "Outdoors",
+      1
+    ],
+    [
+      "Golden Retriever",
+      1
+    ],
+    [
+      "German Shepherd",
+      1
+    ]
+  ]
+}

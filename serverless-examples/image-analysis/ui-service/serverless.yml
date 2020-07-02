@@ -1,0 +1,78 @@
+service: ui-service
+frameworkVersion: ">=1.30.0"
+plugins:
+  - serverless-domain-manager
+custom:
+  databucket: ${env:IMAGE_ANALYSIS_DATA_BUCKET}
+  crawlerqueue: IACrawlerQueue
+  region: ${env:AWS_DEFAULT_REGION, 'us-east-1'}
+  domain: ${env:IMAGE_ANALYSIS_DOMAIN}
+  accountid: ${env:AWS_ACCOUNT_ID}
+  customDomain:
+    domainName: 'imageanalysisapi.${self:custom.domain}'
+    stage: dev
+    basePath: api
+    certificateName: '*.${self:custom.domain}'
+    createRoute53Record: true
+    endpointType: regional
+
+provider:
+  name: aws
+  stage: dev
+  runtime: nodejs12.x
+  region: ${env:AWS_DEFAULT_REGION, 'us-east-1'}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:GetObject
+      Resource: "arn:aws:s3:::${self:custom.databucket}/*"
+    - Effect: Allow
+      Action:
+        - sqs:SendMessage
+        - sqs:DeleteMessage
+        - sqs:GetQueueUrl
+      Resource: "arn:aws:sqs:*:*:${self:custom.crawlerqueue}"
+    - Effect: Allow
+      Action:
+        - sqs:ListQueues
+      Resource: "arn:aws:sqs:::*"
+
+packages:
+  individually: true
+  excludeDevDependencies: true
+
+functions:
+  analyzeUrl:
+    handler: handler.analyzeUrl
+    role: arn:aws:iam::${self:custom.accountid}:role/image-analysis
+    environment:
+      DATA_BUCKET: ${self:custom.databucket}
+      QUEUE: ${self:custom.crawlerqueue}
+      REGION: ${self:custom.region}
+      ACCOUNTID: ${self:custom.accountid}
+    events:
+      - http:
+          path: url/analyze
+          method: post
+          cors: true
+  listUrls:
+    handler: handler.listUrls
+    role: arn:aws:iam::${self:custom.accountid}:role/image-analysis
+    environment:
+      DATA_BUCKET: ${self:custom.databucket}
+    events:
+      - http:
+          path: url/list
+          method: get
+          cors: true
+  listImages:
+    handler: handler.listImages
+    role: arn:aws:iam::${self:custom.accountid}:role/image-analysis
+    environment:
+      DATA_BUCKET: ${self:custom.databucket}
+    events:
+      - http:
+          path: image/list
+          method: get
+          cors: true

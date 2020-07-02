@@ -1,0 +1,19 @@
+{
+  "name": "crawler-service",
+  "version": "1.0.0",
+  "description": "crawl Web page and extract images",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "rhw5688@outlook.com",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^3.2.0",
+    "aws-sdk": "^2.704.0",
+    "htmlparser2": "^4.1.0",
+    "request": "^2.88.2",
+    "shortid": "^2.2.15",
+    "url": "^0.11.0"
+  }
+}

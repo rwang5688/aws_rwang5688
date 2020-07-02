@@ -1,0 +1,46 @@
+service: analysis-service
+frameworkVersion: ">=1.30.0"
+custom:
+  databucket: ${env:IMAGE_ANALYSIS_DATA_BUCKET}
+  analysisqueue: IAAnalysisQueue
+  region: ${env:AWS_DEFAULT_REGION, 'us-east-1'}
+  accountid: ${env:AWS_ACCOUNT_ID}
+
+provider:
+  name: aws
+  stage: dev
+  runtime: nodejs12.x
+  region: ${env:AWS_DEFAULT_REGION, 'us-east-1'}
+  memorySize: 512
+  timeout: 10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "rekognition:*"
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - sqs:ListQueues
+      Resource: "arn:aws:sqs:${self:provider.region}::*"
+    - Effect: Allow
+      Action:
+        - sqs:ReceiveMessage
+        - sqs:DeleteMessage
+        - sqs:GetQueueUrl
+      Resource: "arn:aws:sqs:*:*:${self:custom.analysisqueue}"
+
+functions:
+  analyzeImages:
+    handler: handler.analyzeImages
+    role: arn:aws:iam::${self:custom.accountid}:role/image-analysis
+    environment:
+      DATA_BUCKET: ${self:custom.databucket}
+      REGION: ${self:custom.region}
+      ACCOUNTID: ${self:custom.accountid}
+    events:
+      - sqs:
+          arn: "arn:aws:sqs:${self:provider.region}:${self:custom.accountid}:${self:custom.analysisqueue}"

@@ -1,0 +1,38 @@
+{
+  "url": "http://76bwutrzv.ai-as-a-service.s3-website-eu-west-1.amazonaws.com/",
+  "stat": "downloaded",
+  "downloadResults": [
+    {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com/cat1.png",
+      "stat": "ok"
+    },
+    {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com/cat2.jpg",
+      "stat": "ok"
+    },
+    {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com/cat3.jpg",
+      "stat": "ok"
+    },
+    {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com/cat4.jpg",
+      "stat": "ok"
+    },
+    {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com/dog1.jpg",
+      "stat": "ok"
+    },
+    {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com/dog2.jpg",
+      "stat": "ok"
+    },
+    {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com/dog3.jpeg",
+      "stat": "ok"
+    },
+    {
+      "url": "http://ai-as-a-service.s3-website-eu-west-1.amazonaws.com/dog4.jpg",
+      "stat": "ok"
+    }
+  ]
+}

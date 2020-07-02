@@ -1,0 +1,19 @@
+{
+  "name": "ui-service",
+  "version": "1.0.0",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "rhw5688@outlook.com",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "aws-sdk": "^2.706.0",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "serverless-domain-manager": "^4.1.1",
+    "serverless-offline": "^6.4.0"
+  }
+}
