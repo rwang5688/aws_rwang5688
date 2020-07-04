@@ -1,10 +1,10 @@
-async function hello (event) {
+async function helloWorld (event) {
   'use strict';
   return {
     statusCode: 200,
     body: JSON.stringify(
       {
-        message: 'Go Serverless v1.0! Your function executed successfully!',
+        message: 'helloWorld: Go Serverless v1.0! Your function executed successfully!',
         input: event,
       },
       null,
@@ -16,6 +16,5 @@ async function hello (event) {
 }
 
 module.exports = {
-  hello
+  helloWorld
 }; 
-
