@@ -1,15 +1,15 @@
-service: hello-service
+service: hello-serverless
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs12.x
   stage: dev
-  region: us-east-1
+  region: us-west-2
 
 functions:
-  hello:
-    handler: handler.hello
+  helloServerless:
+    handler: handler.helloServerless
     events:
       - http:
-          path: say/hello
+          path: say/helloServerless
           method: get
  
