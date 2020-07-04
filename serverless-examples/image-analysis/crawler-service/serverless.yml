@@ -4,14 +4,14 @@ custom:
   databucket: ${env:IMAGE_ANALYSIS_DATA_BUCKET}
   crawlerqueue: IACrawlerQueue
   analysisqueue: IAAnalysisQueue
-  region: ${env:AWS_DEFAULT_REGION, 'us-east-1'}
+  region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
   accountid: ${env:AWS_ACCOUNT_ID}
 
 provider:
   name: aws
   stage: dev
   runtime: nodejs12.x
-  region: ${env:AWS_DEFAULT_REGION, 'us-east-1'}
+  region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
   iamRoleStatements:
     - Effect: Allow
       Action:

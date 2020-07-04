@@ -1,4 +1,4 @@
-PREFIX ?= rhw5688
+PREFIX ?= rwang5688
 IMAGE ?= kubia:1.0
 FULL_IMAGE_TAG = "$(PREFIX)/$(IMAGE)"
 
