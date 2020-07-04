@@ -4,9 +4,9 @@
 // of the form https://s3-eu-west-1.amazonaws.com/<YOUR BUCKET NAME> (no slash)
 // const API_ROOT = 'https://chapter2api.<YOUR CUSTOM DOMAIN>/api/' (with slash)
 /*jshint -W101 */
-const DATA_BUCKET_ROOT = 'https://image-analysis-data-rhw5688.s3.amazonaws.com';
+const DATA_BUCKET_ROOT = 'https://image-analysis-data-rwang5688.s3.amazonaws.com';
 /*jshint +W101 */
-const API_ROOT = 'https://imageanalysisapi.rhw5688.com/api/';
+const API_ROOT = 'https://imageanalysisapi.rwang5688.com/api/';
 
 // given url, truncate after '?' into to a shorter displayable url
 function displayableUrl (url) {
