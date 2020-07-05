@@ -1,7 +1,7 @@
 #!/bin/bash
 . checkenv.sh
 
-SERVICES=(ui-service crawler-service analysis-service resources)
+SERVICES=(ui-service analysis-service crawler-service resources)
 
 function remove () {
   for SERVICE in "${SERVICES[@]}"
