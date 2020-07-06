@@ -1,0 +1,23 @@
+{
+  "name": "todo-service",
+  "version": "1.0.0",
+  "description": "todo-service",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "todo-service"
+  ],
+  "author": "rwang5688@outlook.com",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.709.0",
+    "uuid": "^8.2.0"
+  },
+  "devDependencies": {
+    "serverless-domain-manager": "^4.1.1",
+    "serverless-dotenv-plugin": "^2.4.2",
+    "serverless-offline": "^6.4.0"
+  }
+}
