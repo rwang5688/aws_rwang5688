@@ -1,0 +1,18 @@
+{
+  "name": "resources",
+  "version": "1.0.0",
+  "description": "to-do-list resources",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "to-do-list",
+    "resources"
+  ],
+  "author": "rwang5688@outlook.com",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless-dotenv-plugin": "^2.4.2"
+  }
+}
