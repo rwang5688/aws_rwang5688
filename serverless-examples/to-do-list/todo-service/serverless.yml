@@ -42,6 +42,7 @@ provider:
 functions:
   create:
     handler: handler.create
+    role: arn:aws:iam::${self:custom.accountid}:role/to-do-list
     events:
       - http:
           method: POST
@@ -49,6 +50,7 @@ functions:
           cors: true
   read:
     handler: handler.read
+    role: arn:aws:iam::${self:custom.accountid}:role/to-do-list
     events:
       - http:
           method: GET
@@ -56,6 +58,7 @@ functions:
           cors: true
   update:
     handler: handler.update
+    role: arn:aws:iam::${self:custom.accountid}:role/to-do-list
     events:
       - http:
           method: PUT
@@ -63,6 +66,7 @@ functions:
           cors: true
   delete:
     handler: handler.del
+    role: arn:aws:iam::${self:custom.accountid}:role/to-do-list
     events:
       - http:
           method: DELETE
@@ -70,6 +74,7 @@ functions:
           cors: true
   list:
     handler: handler.list
+    role: arn:aws:iam::${self:custom.accountid}:role/to-do-list
     events:
       - http:
           method: GET
