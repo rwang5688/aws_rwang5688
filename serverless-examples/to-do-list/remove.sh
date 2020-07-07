@@ -1,5 +1,5 @@
 #!/bin/bash
-. ./.env
+. ./default-environment.env
 . checkenv.sh
 
 SERVICES=(frontend todo-service resources)
