@@ -1,43 +1,43 @@
-'use strict'
+'use strict';
 
-import $ from 'jquery'
-import 'webpack-jquery-ui/datepicker'
-import { todoListTpl, addTpl, editTpl, errTpl } from './templates'
+import $ from 'jquery';
+import 'webpack-jquery-ui/datepicker';
+import { todoListTpl, addTpl, editTpl, errTpl } from './templates';
 
-const view = { renderList, renderAddButton, renderEditArea, renderError }
-export { view }
+const view = { renderList, renderAddButton, renderEditArea, renderError };
+export { view };
 
 
 function renderList (body) {
-  $('#content').html(todoListTpl(body.Items))
+  $('#content').html(todoListTpl(body.Items));
 }
 
 
 function renderAddButton () {
-  $('#edit-area').html(addTpl())
+  $('#edit-area').html(addTpl());
 }
 
 
 function renderEditArea (id) {
-  $('#edit-area').html(editTpl())
-  $('#todo-duedate').datepicker()
+  $('#edit-area').html(editTpl());
+  $('#todo-duedate').datepicker();
   setTimeout(function () {
-    $('#todo-duedate').datepicker()
+    $('#todo-duedate').datepicker();
     if (id) {
-      $('#todo-id').val(id)
-      $('#todo-duedate').val($('#' + id + ' #due-date').text())
-      $('#todo-action').val($('#' + id + ' #action').text())
+      $('#todo-id').val(id);
+      $('#todo-duedate').val($('#' + id + ' #due-date').text());
+      $('#todo-action').val($('#' + id + ' #action').text());
       if ($('#' + id + ' #stat').text() === 'done') {
-        $('#todo-stat').prop('checked', true)
+        $('#todo-stat').prop('checked', true);
       }
       // $('#todo-stat').val($('#' + id + ' #stat').text())
-      $('#todo-note').val($('#' + id + ' #note').text())
+      $('#todo-note').val($('#' + id + ' #note').text());
     }
-  }, 100)
+  }, 100);
 }
 
 
 function renderError (body) {
-  $('#error').html(errTpl(body.err))
+  $('#error').html(errTpl(body.err));
 }
 
