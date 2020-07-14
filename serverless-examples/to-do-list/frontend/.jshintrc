@@ -1,15 +1,10 @@
 {
   "globals": { 
-    "$": true,
-    "todoItemTpl": true,
-    "todoListTpl": true,
-    "editTpl": true,
-    "addTpl": true,
-    "errTpl": true,
-    "navBarTpl": true,
-    "navBarScheduleTpl": true
+    "require": true,
+    "__dirname": true,
+    "process": true
   },
-
+  
   "camelcase": false,
   "curly": true,
   "forin": false,

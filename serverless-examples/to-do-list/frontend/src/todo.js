@@ -1,14 +1,15 @@
-'use strict'
+'use strict';
 
-import $ from 'jquery'
-import {view} from './todo-view'
+import $ from 'jquery';
+import {view} from './todo-view';
 
 
-const todo = {activate}
-export {todo}
+const todo = {activate};
+export {todo};
 
-const API_ROOT = `https://chapter4api.${process.env.CHAPTER4_DOMAIN}/api/todo/`
-
+/*jshint -W101 */
+const API_ROOT = `https://todolistapi.${process.env.TO_DO_LIST_DOMAIN}/api/todo/`;
+/*jshint +W101 */
 
 function gather () {
   return {
@@ -17,7 +18,7 @@ function gather () {
     action: $('#todo-action').val(),
     stat: $('#todo-stat').is(':checked') ? 'done' : 'open',
     note: $('#todo-note').val()
-  }
+  };
 }
 
 
@@ -28,13 +29,13 @@ function create (cb) {
     type: 'POST',
     success: function (body) {
       if (body.stat === 'ok') {
-        list(cb)
+        list(cb);
       } else {
-        $('#error').html(body.err)
-        cb && cb()
+        $('#error').html(body.err);
+        cb && cb();
       }
     }
-  })
+  });
 }
 
 
@@ -45,13 +46,13 @@ function update (cb) {
     type: 'PUT',
     success: function (body) {
       if (body.stat === 'ok') {
-        list(cb)
+        list(cb);
       } else {
-        $('#error').html(body.err)
-        cb && cb()
+        $('#error').html(body.err);
+        cb && cb();
       }
     }
-  })
+  });
 }
 
 
@@ -60,74 +61,74 @@ function del (id) {
     type: 'DELETE',
     success: function (body) {
       if (body.stat === 'ok') {
-        list()
+        list();
       } else {
-        $('#error').html(body.err)
+        $('#error').html(body.err);
       }
     }
-  })
+  });
 }
 
 
 function list (cb) {
   $.get(API_ROOT, function (body) {
     if (body.stat === 'ok') {
-      view.renderList(body)
+      view.renderList(body);
     } else {
-      view.renderError(body)
+      view.renderError(body);
     }
-    cb && cb()
-  })
+    cb && cb();
+  });
 }
 
 
 function bindList () {
-  $('.todo-item-edit').unbind('click')
+  $('.todo-item-edit').unbind('click');
   $('.todo-item-edit').on('click', (e) => {
-    view.renderEditArea(e.currentTarget.id)
-  })
-  $('.todo-item-delete').unbind('click')
+    view.renderEditArea(e.currentTarget.id);
+  });
+  $('.todo-item-delete').unbind('click');
   $('.todo-item-delete').on('click', (e) => {
-    del(e.currentTarget.id)
-  })
+    del(e.currentTarget.id);
+  });
 }
 
 
 function bindEdit () {
-  $('#input-todo').unbind('click')
+  $('#input-todo').unbind('click');
   $('#input-todo').on('click', e => {
-    e.preventDefault()
-    view.renderEditArea()
-  })
-  $('#todo-save').unbind('click')
+    e.preventDefault();
+    view.renderEditArea();
+  });
+  $('#todo-save').unbind('click');
   $('#todo-save').on('click', e => {
-    e.preventDefault()
+    e.preventDefault();
     if ($('#todo-id').val().length > 0) {
       update(() => {
-        view.renderAddButton()
-      })
+        view.renderAddButton();
+      });
     } else {
       create(() => {
-        view.renderAddButton()
-      })
+        view.renderAddButton();
+      });
     }
-  })
-  $('#todo-cancel').unbind('click')
+  });
+  $('#todo-cancel').unbind('click');
   $('#todo-cancel').on('click', e => {
-    e.preventDefault()
-    view.renderAddButton()
-  })
+    e.preventDefault();
+    view.renderAddButton();
+  });
 }
 
 
 function activate () {
   list(() => {
-    bindList()
-    bindEdit()
-  })
+    bindList();
+    bindEdit();
+  });
   $('#content').bind('DOMSubtreeModified', () => {
-    bindList()
-    bindEdit()
-  })
+    bindList();
+    bindEdit();
+  });
 }
 

@@ -1,8 +1,9 @@
-'use strict'
+'use strict';
 
-export { todoListTpl, editTpl, addTpl, errTpl, navBarTpl, navBarScheduleTpl }
+export { todoListTpl, editTpl, addTpl, errTpl, navBarTpl, navBarScheduleTpl };
 
 function todoItemTpl (item) {
+  /*jshint -W101 */
   return `
     <div id="${item.id}" class="row list-group-item d-flex justify-content-between align-items-center">
       <div class="col-sm-1"></div>
@@ -12,17 +13,18 @@ function todoItemTpl (item) {
       <div id="stat" class="col-sm-1 badge badge-secondary badge-pill">${item.stat}</div>
       <div id="${item.id}" class="col-sm-1 badge badge-danger badge-pill todo-item-delete">Delete</div>
       <div id="${item.id}" class="col-sm-1 badge badge-primary badge-pill todo-item-edit">Edit</div>
-    </div>`
+    </div>`;
+  /*jshint +W101 */
 }
 
 
 function todoListTpl (items) {
-  let output = ''
+  let output = '';
   items.forEach(item => {
-    output += todoItemTpl(item)
-  })
+    output += todoItemTpl(item);
+  });
 
-
+  /*jshint -W101 */
   return `
   <div id="todo-list">
     <div class="row list-group-item d-flex justify-content-between align-items-center">
@@ -40,11 +42,13 @@ function todoListTpl (items) {
     <li class="list-group-item d-flex justify-content-between align-items-center">
       <span id="input-todo" class="badge badge-success badge-pill">new</span>
     </li>
-  </div>`
+  </div>`;
+  /*jshint +W101 */
 }
 
 
 function editTpl () {
+  /*jshint -W101 */
   return `
     <div class="row">&nbsp;</div>
     <div class="row">
@@ -76,29 +80,32 @@ function editTpl () {
           </div>
         </div>
       </div>
-    </div>`
+    </div>`;
+    /*jshint +W101 */
 }
 
 
 function addTpl () {
+  /*jshint -W101 */
   return `<li class="list-group-item d-flex justify-content-between align-items-center">
     <span id="input-todo" class="badge badge-success badge-pill">new</span>
-  </li>`
+  </li>`;
+  /*jshint +W101 */
 }
 
 
 function errTpl (err) {
-  return `<div class="error">${JSON.stringify(err)}</div>`
+  return `<div class="error">${JSON.stringify(err)}</div>`;
 }
 
 
 function navBarTpl (isAuth) {
-  let link
+  let link;
 
   if (isAuth) {
-    link = '<a class="nav-link" href="#" id="logout">Logout</a>'
+    link = '<a class="nav-link" href="#" id="logout">Logout</a>';
   } else {
-    link = '<a class="nav-link" href="#" id="login">Login</a>'
+    link = '<a class="nav-link" href="#" id="login">Login</a>';
   }
 
   return `
@@ -106,7 +113,7 @@ function navBarTpl (isAuth) {
     <li class="nav-item">
       ${link}
     </li>
-  </ul>`
+  </ul>`;
 }
 
 
@@ -114,6 +121,6 @@ function navBarScheduleTpl () {
   return `
     <li class="nav-item">
       <button id='todo-schedule'>schedule</button>
-    </li>`
+    </li>`;
 }
 
