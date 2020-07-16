@@ -7,7 +7,7 @@ custom:
   region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
   accountid: ${env:AWS_ACCOUNT_ID}
   dotenv:
-    path: ../default-environment.env
+    path: ../.env
 
 provider:
   name: aws

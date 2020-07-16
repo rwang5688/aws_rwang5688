@@ -9,7 +9,7 @@ custom:
   accountid: ${env:AWS_ACCOUNT_ID}
   domain: ${env:TO_DO_LIST_DOMAIN}
   dotenv:
-    path: ../default-environment.env
+    path: ../.env
   customDomain:
     domainName: 'todolistapi.${self:custom.domain}'
     stage: ${self:provider.stage}

@@ -2,7 +2,7 @@
 . ./.env
 . checkenv.sh
 
-SERVICES=(resources todo-service frontend)
+SERVICES=(resources frontend user-service)
 
 function deploy () {
   for SERVICE in "${SERVICES[@]}"
@@ -25,6 +25,10 @@ function domain () {
 }
 
 domain
+deploy
+. ./cognito.sh setup
+
+SERVICES=(todo-service)
 deploy
 
 cd frontend
