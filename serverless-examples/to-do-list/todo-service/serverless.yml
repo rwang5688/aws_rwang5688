@@ -8,6 +8,7 @@ custom:
   region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
   accountid: ${env:AWS_ACCOUNT_ID}
   domain: ${env:TO_DO_LIST_DOMAIN}
+  userPoolArn: ${env:TO_DO_LIST_USER_POOL_ARN}
   dotenv:
     path: ../.env
   customDomain:
@@ -48,6 +49,8 @@ functions:
           method: POST
           path: todo
           cors: true
+          authorizer:
+            arn: '${self:custom.userPoolArn}'
   read:
     handler: handler.read
     role: arn:aws:iam::${self:custom.accountid}:role/to-do-list
@@ -56,6 +59,8 @@ functions:
           method: GET
           path: todo/{id}
           cors: true
+          authorizer:
+            arn: '${self:custom.userPoolArn}'
   update:
     handler: handler.update
     role: arn:aws:iam::${self:custom.accountid}:role/to-do-list
@@ -64,6 +69,8 @@ functions:
           method: PUT
           path: todo/{id}
           cors: true
+          authorizer:
+            arn: '${self:custom.userPoolArn}'
   delete:
     handler: handler.del
     role: arn:aws:iam::${self:custom.accountid}:role/to-do-list
@@ -72,6 +79,8 @@ functions:
           method: DELETE
           path: todo/{id}
           cors: true
+          authorizer:
+            arn: '${self:custom.userPoolArn}'
   list:
     handler: handler.list
     role: arn:aws:iam::${self:custom.accountid}:role/to-do-list
@@ -80,6 +89,9 @@ functions:
           method: GET
           path: todo
           cors: true
+          authorizer:
+            arn: '${self:custom.userPoolArn}'
 
 resources:
   - ${file(./dynamodb.yml)}
+
