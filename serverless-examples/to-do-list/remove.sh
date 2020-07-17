@@ -1,8 +1,8 @@
 #!/bin/bash
-. ./default-environment.env
+. ./.env
 . checkenv.sh
 
-SERVICES=(frontend todo-service resources)
+SERVICES=(frontend resources todo-service user-service)
 
 function remove () {
   for SERVICE in "${SERVICES[@]}"
@@ -20,8 +20,12 @@ function domain () {
   cd ..
 }
 
-domain
-
 aws s3 rm s3://${TO_DO_LIST_APPS_BUCKET} --recursive
 aws s3 rm s3://${TO_DO_LIST_DATA_BUCKET} --recursive
+. ./cognito.sh teardown
+
+domain
 remove
+
+aws dynamodb delete-table --table-name todo-service-dev
+
