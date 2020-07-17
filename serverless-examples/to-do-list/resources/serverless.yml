@@ -3,6 +3,7 @@ frameworkVersion: ">=1.30.0"
 plugins:
   - serverless-dotenv-plugin
 custom:
+  appsBucket: ${env:TO_DO_LIST_APPS_BUCKET}
   dataBucket: ${env:TO_DO_LIST_DATA_BUCKET}
   region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
   accountid: ${env:AWS_ACCOUNT_ID}
@@ -17,6 +18,41 @@ provider:
 
 resources:
   Resources:
+    WebAppS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.appsBucket}
+        CorsConfiguration:
+          CorsRules:
+            -
+              AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
+                - PUT
+                - POST
+                - DELETE
+                - HEAD
+              MaxAge: 3000
+        AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: index.html
+    WebAppS3BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: WebAppS3Bucket
+        PolicyDocument:
+          Statement:
+            - Sid: PublicReadGetObject
+              Effect: Allow
+              Principal: "*"
+              Action:
+                - s3:GetObject
+              Resource: arn:aws:s3:::${self:custom.appsBucket}/*
     DataBucket:
       Type: AWS::S3::Bucket
       Properties:
@@ -49,3 +85,4 @@ resources:
               Action:
                 - s3:GetObject
               Resource: arn:aws:s3:::${self:custom.dataBucket}/*
+
