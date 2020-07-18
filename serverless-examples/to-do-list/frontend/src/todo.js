@@ -2,14 +2,15 @@
 
 import $ from 'jquery';
 import {view} from './todo-view';
-
-
 const todo = {activate};
 export {todo};
 
 /*jshint -W101 */
 const API_ROOT = `https://todolistapi.${process.env.TO_DO_LIST_DOMAIN}/api/todo/`;
 /*jshint +W101 */
+
+let auth;
+
 
 function gather () {
   return {
@@ -23,62 +24,89 @@ function gather () {
 
 
 function create (cb) {
-  $.ajax(API_ROOT, {
-    data: JSON.stringify(gather()),
-    contentType: 'application/json',
-    type: 'POST',
-    success: function (body) {
-      if (body.stat === 'ok') {
-        list(cb);
-      } else {
-        $('#error').html(body.err);
-        cb && cb();
+  auth.session().then(session => {
+    $.ajax(API_ROOT, {
+      data: JSON.stringify(gather()),
+      contentType: 'application/json',
+      type: 'POST',
+      headers: {
+        Authorization: session.idToken.jwtToken
+      },
+      success: function (body) {
+        if (body.stat === 'ok') {
+          list(cb);
+        } else {
+          $('#error').html(body.err);
+          cb && cb();
+        }
       }
-    }
-  });
+    });
+  }).catch(err => view.renderError(err));
 }
 
 
 function update (cb) {
-  $.ajax(API_ROOT + $('#todo-id').val(), {
-    data: JSON.stringify(gather()),
-    contentType: 'application/json',
-    type: 'PUT',
-    success: function (body) {
-      if (body.stat === 'ok') {
-        list(cb);
-      } else {
-        $('#error').html(body.err);
-        cb && cb();
+  auth.session().then(session => {
+    $.ajax(API_ROOT + $('#todo-id').val(), {
+      data: JSON.stringify(gather()),
+      contentType: 'application/json',
+      type: 'PUT',
+      headers: {
+        Authorization: session.idToken.jwtToken
+      },
+      success: function (body) {
+        if (body.stat === 'ok') {
+          list(cb);
+        } else {
+          $('#error').html(body.err);
+          cb && cb();
+        }
       }
-    }
-  });
+    });
+  }).catch(err => view.renderError(err));
 }
 
 
 function del (id) {
-  $.ajax(API_ROOT + id, {
-    type: 'DELETE',
-    success: function (body) {
-      if (body.stat === 'ok') {
-        list();
-      } else {
-        $('#error').html(body.err);
+  auth.session().then(session => {
+    $.ajax(API_ROOT + id, {
+      type: 'DELETE',
+      headers: {
+        Authorization: session.idToken.jwtToken
+      },
+      success: function (body) {
+        if (body.stat === 'ok') {
+          list();
+        } else {
+          $('#error').html(body.err);
+        }
       }
-    }
-  });
+    });
+  }).catch(err => view.renderError(err));
 }
 
 
 function list (cb) {
-  $.get(API_ROOT, function (body) {
-    if (body.stat === 'ok') {
-      view.renderList(body);
-    } else {
-      view.renderError(body);
-    }
-    cb && cb();
-  });
+  auth.session().then(session => {
+    $.ajax(API_ROOT, {
+      type: 'GET',
+      headers: {
+        Authorization: session.idToken.jwtToken
+      },
+      success: function (body) {
+        if (body.stat === 'ok') {
+          view.renderList(body);
+        } else {
+          view.renderError(body);
+        }
+        cb && cb();
+      },
+      fail: function (jqXHR, textStatus, errorThrown) {
+        alert(textStatus);
+        alert(errorThrown);
+      }
+    });
+  }).catch(err => view.renderError(err));
 }
 
 
@@ -121,7 +149,8 @@ function bindEdit () {
 }
 
 
-function activate () {
+function activate (authObj) {
+  auth = authObj;
   list(() => {
     bindList();
     bindEdit();

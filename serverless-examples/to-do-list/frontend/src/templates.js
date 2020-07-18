@@ -24,6 +24,7 @@ function todoListTpl (items) {
     output += todoItemTpl(item);
   });
 
+
   /*jshint -W101 */
   return `
   <div id="todo-list">

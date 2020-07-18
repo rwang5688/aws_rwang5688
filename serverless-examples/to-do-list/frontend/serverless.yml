@@ -3,7 +3,7 @@ frameworkVersion: ">=1.30.0"
 plugins:
   - serverless-dotenv-plugin
 custom:
-  bucket: ${env:TO_DO_LIST_APPS_BUCKET}
+  appsBucket: ${env:TO_DO_LIST_APPS_BUCKET}
   region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
   accountid: ${env:AWS_ACCOUNT_ID}
   dotenv:
@@ -20,7 +20,7 @@ resources:
     WebAppS3Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:custom.bucket}
+        BucketName: ${self:custom.appsBucket}
         CorsConfiguration:
           CorsRules:
             -
@@ -51,4 +51,4 @@ resources:
               Principal: "*"
               Action:
                 - s3:GetObject
-              Resource: arn:aws:s3:::${self:custom.bucket}/*
+              Resource: arn:aws:s3:::${self:custom.appsBucket}/*
