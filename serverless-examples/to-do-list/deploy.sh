@@ -26,9 +26,11 @@ function domain () {
 
 
 # create apps and data buckets
-# (waht does frontend deploy do?)
-# create user and identity pools
-SERVICES=(resources frontend user-service)
+# (frontend sls deploy is creating apps bucket again - remove)
+# (user-service sls deploy need to be done bf running this script
+# and we need to manually edit .env to add the various ids and arns)
+# SERVICES=(resources frontend user-service)
+SERVICES=(resources)
 deploy
 
 # create user pool domain
