@@ -1,7 +1,7 @@
 #!/bin/bash
+. ./.env
 . checkenv.sh
 
-SERVICES=(resources crawler-service analysis-service ui-service)
 
 function deploy () {
   for SERVICE in "${SERVICES[@]}"
@@ -16,8 +16,29 @@ function deploy () {
   done
 }
 
+
+function domain () {
+  cd ui-service
+  npm install
+  serverless create_domain
+  cd ..
+}
+
+
+# create apps and data buckets
+# deploy crawler-service and analysis-service
+SERVICES=(resources crawler-service analysis-service)
 deploy
 
+# create ui-service API domain
+# deploy ui-service API functions
+domain
+SERVICES=(ui-service)
+deploy
+
+# deploy frontend app
 cd frontend-apps
+npm install
 aws s3 sync web-app/ s3://$IMAGE_ANALYSIS_APPS_BUCKET
 cd ..
+

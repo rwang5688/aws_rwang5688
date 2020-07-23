@@ -1,5 +1,7 @@
 service: resources
 frameworkVersion: ">=1.30.0"
+plugins:
+  - serverless-dotenv-plugin
 custom:
   appsbucket: ${env:IMAGE_ANALYSIS_APPS_BUCKET}
   databucket: ${env:IMAGE_ANALYSIS_DATA_BUCKET}
@@ -7,6 +9,8 @@ custom:
   analysisqueue: IAAnalysisQueue
   region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
   accountid: ${env:AWS_ACCOUNT_ID}
+  dotenv:
+    path: ../.env
 
 provider:
   name: aws

@@ -2,12 +2,15 @@ service: ui-service
 frameworkVersion: ">=1.30.0"
 plugins:
   - serverless-domain-manager
+  - serverless-dotenv-plugin
 custom:
   databucket: ${env:IMAGE_ANALYSIS_DATA_BUCKET}
   crawlerqueue: IACrawlerQueue
   region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
   domain: ${env:IMAGE_ANALYSIS_DOMAIN}
   accountid: ${env:AWS_ACCOUNT_ID}
+  dotenv:
+    path: ../.env
   customDomain:
     domainName: 'imageanalysisapi.${self:custom.domain}'
     stage: dev

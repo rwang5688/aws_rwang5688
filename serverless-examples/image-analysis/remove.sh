@@ -1,7 +1,7 @@
 #!/bin/bash
+. ./.env
 . checkenv.sh
 
-SERVICES=(ui-service analysis-service crawler-service resources)
 
 function remove () {
   for SERVICE in "${SERVICES[@]}"
@@ -13,6 +13,22 @@ function remove () {
   done
 }
 
+
+function domain () {
+  cd ui-service
+  serverless delete_domain
+  cd ..
+}
+
+
+# remove frontend apps and data
 aws s3 rm s3://$IMAGE_ANALYSIS_DATA_BUCKET --recursive
 aws s3 rm s3://$IMAGE_ANALYSIS_APPS_BUCKET --recursive
+
+# remove functions and buckets
+SERVICES=(ui-service analysis-service crawler-service resources)
 remove
+
+# delete ui-service api domain and db table
+domain
+
