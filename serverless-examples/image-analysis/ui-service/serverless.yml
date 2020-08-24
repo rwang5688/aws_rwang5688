@@ -6,7 +6,7 @@ plugins:
 custom:
   databucket: ${env:IMAGE_ANALYSIS_DATA_BUCKET}
   crawlerqueue: IACrawlerQueue
-  region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
+  region: ${env:TARGET_REGION, 'us-west-2'}
   domain: ${env:IMAGE_ANALYSIS_DOMAIN}
   accountid: ${env:AWS_ACCOUNT_ID}
   dotenv:
@@ -23,7 +23,7 @@ provider:
   name: aws
   stage: dev
   runtime: nodejs12.x
-  region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
+  region: ${env:TARGET_REGION, 'us-west-2'}
   iamRoleStatements:
     - Effect: Allow
       Action:

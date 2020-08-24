@@ -5,7 +5,7 @@ plugins:
 custom:
   appsBucket: ${env:TO_DO_LIST_APPS_BUCKET}
   dataBucket: ${env:TO_DO_LIST_DATA_BUCKET}
-  region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
+  region: ${env:TARGET_REGION, 'us-west-2'}
   accountid: ${env:AWS_ACCOUNT_ID}
   dotenv:
     path: ../.env
@@ -14,7 +14,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   stage: ${opt:stage, 'dev'}
-  region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
+  region: ${env:TARGET_REGION, 'us-west-2'}
 
 resources:
   Resources:

@@ -5,7 +5,7 @@ plugins:
   - serverless-domain-manager
   - serverless-dotenv-plugin
 custom:
-  region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
+  region: ${env:TARGET_REGION, 'us-west-2'}
   accountid: ${env:AWS_ACCOUNT_ID}
   domain: ${env:TO_DO_LIST_DOMAIN}
   userPoolArn: ${env:TO_DO_LIST_USER_POOL_ARN}
@@ -25,7 +25,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   stage: ${opt:stage, 'dev'}
-  region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
+  region: ${env:TARGET_REGION, 'us-west-2'}
   environment:
     TODO_TABLE: '${self:service}-${self:provider.stage}'
   iamRoleStatements:

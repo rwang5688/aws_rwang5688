@@ -5,7 +5,7 @@ plugins:
 custom:
   databucket: ${env:IMAGE_ANALYSIS_DATA_BUCKET}
   analysisqueue: IAAnalysisQueue
-  region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
+  region: ${env:TARGET_REGION, 'us-west-2'}
   accountid: ${env:AWS_ACCOUNT_ID}
   dotenv:
     path: ../.env
@@ -14,7 +14,7 @@ provider:
   name: aws
   stage: dev
   runtime: nodejs12.x
-  region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
+  region: ${env:TARGET_REGION, 'us-west-2'}
   memorySize: 512
   timeout: 10
   iamRoleStatements:
