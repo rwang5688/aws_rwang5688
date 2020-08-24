@@ -26,7 +26,7 @@ aws s3 rm s3://${TO_DO_LIST_APPS_BUCKET} --recursive
 aws s3 rm s3://${TO_DO_LIST_DATA_BUCKET} --recursive
 
 # remove functions and buckets
-SERVICES=(frontend resources todo-service user-service)
+SERVICES=(frontend todo-service resources)
 remove
 
 # delete todo-service api domain and db table

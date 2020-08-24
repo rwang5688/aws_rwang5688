@@ -1,7 +1,7 @@
 service: user-service
 frameworkVersion: ">=1.30.0"
 custom:
-  region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
+  region: ${env:TARGET_REGION, 'us-west-2'}
   accountid: ${env:AWS_ACCOUNT_ID}
   stage: ${self:provider.stage}
 
@@ -9,7 +9,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   stage: ${opt:stage, 'dev'}
-  region: ${env:AWS_DEFAULT_REGION, 'us-west-2'}
+  region: ${env:TARGET_REGION, 'us-west-2'}
 
 resources:
   - ${file(./user-pool.yml)}
