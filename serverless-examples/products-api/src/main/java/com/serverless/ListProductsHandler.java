@@ -16,9 +16,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serverless.dal.Product;
 
 
-public class ListProductHandler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
+public class ListProductsHandler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
 
-	private static final Logger logger = LogManager.getLogger(ListProductHandler.class);
+	private static final Logger logger = LogManager.getLogger(ListProductsHandler.class);
 
 	@Override
 	public ApiGatewayResponse handleRequest(Map<String, Object> input, Context context) {
