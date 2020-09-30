@@ -1,0 +1,17 @@
+{
+  "name": "products-api",
+  "version": "1.0.0",
+  "description": "products-api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "products-api"
+  ],
+  "author": "rwang5688@outlook.com",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless-domain-manager": "^5.0.0"
+  }
+}
