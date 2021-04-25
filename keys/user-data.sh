@@ -2,10 +2,10 @@
 yum update -y
 yum install httpd -y
 cd /var/www/html
-echo "Hello from Web Server 1 in us-east-2e N. Virginia" > index.html
-echo "Hello from Web Server 2 in us-east-2f N. Virginia" > index.html
-echo "Hello from Web Server 3 in ap-southeast-2a Sydney" > index.html
-echo "Hello from Web Server 4 in eu-north-1a Stockholm" > index.html
+echo "<html><h1>Hello from Web Server 1 in us-east-1e N. Virginia</h1></html>" > index.html
+echo "<html><h1>Hello from Web Server 2 in us-east-1f N. Virginia</h1></html>" > index.html
+echo "<html><h1>Hello from Web Server 3 in ap-southeast-2a Sydney</h1></html>" > index.html
+echo "<html><h1>Hello from Web Server 4 in eu-north-1a Stockholm</h1></html>" > index.html
 service httpd start
 chkconfig httpd on
 sudo yum install -y perl-Switch perl-DateTime perl-Sys-Syslog perl-LWP-Protocol-https perl-Digest-SHA.x86_64
