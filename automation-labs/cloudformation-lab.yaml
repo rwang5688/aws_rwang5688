@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Template to create an EC2 instance and enable SSH
+
+Parameters:
+  ImageId:
+    Description: AMI Image Id for t2.micro
+    Type: String
+    ConstraintDescription: Provide the AMI image id for t2.micro
+    Default: 'ami-5b41123e'
+  InstanceName:
+    Description: EC2 Instance Name
+    Type: String
+    ConstraintDescription: Provide EC2 instance name
+    Default: 'wangrob-ec2-cloudformation-lab-us-east-1'
+  KeyName:
+    Description: SSH KeyPair Name
+    Type: 'AWS::EC2::KeyPair::KeyName'
+    ConstraintDescription: Provide the name of an existing SSH key pair
+    Default: 'wangrob-ec2-us-east-1'
+  SecurityGroupName:
+    Description: Security Group Name
+    Type: String
+    ConstraintDescription: Provide security group name
+    Default: 'wangrob-ec2-cloudformation-lab-sg'
+  CidrIp:
+    Description: CIDR IP for Admin Desktop
+    Type: String
+    ConstraintDescription: The IP address/range the user will connect from
+    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
+
+Resources:
+  MyEC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: t2.micro
+      ImageId: !Ref ImageId
+      KeyName: !Ref KeyName
+      SecurityGroups:
+        - !Ref InstanceSG
+      Tags:
+        - Key: Name
+          Value: !Ref InstanceName
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          sudo yum update -y
+          sudo yum install httpd -y
+          cd /var/www/html
+          echo "<html><h1>Hello World from CloudFormation lab!</h1></html>" > index.html
+          service httpd start
+          chkconfig httpd on
+          sudo yum install -y perl-Switch perl-DateTime perl-Sys-Syslog perl-LWP-Protocol-https perl-Digest-SHA.x86_64
+          cd /home/ec2-user/
+          curl https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip -O
+          unzip CloudWatchMonitoringScripts-1.2.2.zip
+          rm -rf CloudWatchMonitoringScripts-1.2.2.zip
+
+  InstanceSG:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupName: !Ref SecurityGroupName
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+        IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: !Ref CidrIp
+  InstanceSGHTTPIngress:
+      Type: 'AWS::EC2::SecurityGroupIngress'
+      Properties:
+        GroupId: !GetAtt InstanceSG.GroupId
+        IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+
+Outputs: 
+  InstanceID:
+    Description: The Instance ID
+    Value: !Ref MyEC2Instance
+
