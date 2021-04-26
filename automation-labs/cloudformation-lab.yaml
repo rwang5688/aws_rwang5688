@@ -7,7 +7,7 @@ Parameters:
     Description: AMI Image Id for t2.micro
     Type: String
     ConstraintDescription: Provide the AMI image id for t2.micro
-    Default: 'ami-5b41123e'
+    Default: 'ami-0742b4e673072066f'
   InstanceName:
     Description: EC2 Instance Name
     Type: String
@@ -43,7 +43,7 @@ Resources:
           Value: !Ref InstanceName
       UserData:
         Fn::Base64: !Sub |
-          #!/bin/bash
+          #!/bin/bash -ex
           sudo yum update -y
           sudo yum install httpd -y
           cd /var/www/html
