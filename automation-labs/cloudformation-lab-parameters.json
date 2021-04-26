@@ -1,0 +1,23 @@
+[
+  {
+    "ParameterKey": "ImageId",
+    "ParameterValue": "ami-5b41123e"
+  },
+  {
+    "ParameterKey": "InstanceName",
+    "ParameterValue": "wangrob-ec2-cloudformation-lab-us-east-1"
+  }, 
+  {
+    "ParameterKey": "KeyName",
+    "ParameterValue": "wangrob-ec2-us-east-1"
+  },
+  {
+    "ParameterKey": "SecurityGroupName",
+    "ParameterValue": "wangrob-ec2-cloudformation-lab-sg"
+  },
+  {
+    "ParameterKey": "CidrIp",
+    "ParameterValue": "72.21.198.0/24"
+  } 
+]
+
