@@ -13,7 +13,6 @@ Parameters:
   InstanceType:
     Description: EC2 instance type
     Type: String
-    Default: t2.nano
     AllowedValues: [a1.2xlarge, a1.4xlarge, a1.large, a1.medium, a1.metal, 
     a1.xlarge, c1.medium, c1.xlarge, c3.2xlarge, c3.4xlarge, c3.8xlarge, 
     c3.large, c3.xlarge, c4.2xlarge, c4.4xlarge, c4.8xlarge, c4.large, c4.xlarge, 
@@ -67,11 +66,9 @@ Parameters:
   VpcId:
     Description: VPC id
     Type: String
-    ConstraintDescription: Provide VPC id
   SubnetId:
     Description: Subnet id
     Type: String
-    ConstraintDescription: Provide subnet id
   KeyName:
     Description: SSH KeyPair Name
     Type: 'AWS::EC2::KeyPair::KeyName'
@@ -93,11 +90,38 @@ Parameters:
     Default: 'mindLAMP-platform-ec2-02-app'
 
 Resources:
-  EC2SecurityGroup:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+  Subnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.0.0/24
+      VpcId:
+        Ref: VPC
+      MapPublicIpOnLaunch: 'True'
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: VPC
+  VPCGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: VPC
+      InternetGatewayId:
+        Ref: InternetGateway
+  SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Ref SecurityGroupName
       GroupDescription: 'mindLAMP EC2 Security Group'
+      VpcId:
+        Ref: VPC
       SecurityGroupIngress: 
         - IpProtocol: tcp
           CidrIp: 0.0.0.0/0
@@ -115,17 +139,55 @@ Resources:
           CidrIpv6: ::/0
           FromPort: 443
           ToPort: 443
-  
-  EC2Instance01:
+  Route:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: InternetGateway
+  SubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: RouteTable
+      SubnetId:
+        Ref: Subnet
+
+  IamInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+      - Ref: Ec2InstanceRole
+  Ec2InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2008-10-17'
+        Statement:
+        - Sid: ''
+          Effect: Allow
+          Principal:
+            Service: ec2.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+      - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+
+  Ec2Instance01:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: !Ref InstanceType
       ImageId: !Ref ImageId
       EbsOptimized: true
-      SecurityGroups: 
-        - !Ref EC2SecurityGroup
+      SubnetId: !Ref Subnet
+      SecurityGroupIds:
+        - Ref: SecurityGroup
       SourceDestCheck: true
-      IamInstanceProfile: AmazonSSMRoleForInstancesQuickSetup
+      IamInstanceProfile: !Ref IamInstanceProfile
       BlockDeviceMappings: 
         - DeviceName: /dev/xvda
           Ebs: 
@@ -144,16 +206,17 @@ Resources:
         - Key: Name
           Value: !Ref EC2Instance01Name
 
-  EC2Instance02:
+  Ec2Instance02:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: !Ref InstanceType
       ImageId: !Ref ImageId
       EbsOptimized: true
-      SecurityGroups:
-        - !Ref EC2SecurityGroup
+      SubnetId: !Ref Subnet
+      SecurityGroupIds:
+        - Ref: SecurityGroup
       SourceDestCheck: true
-      IamInstanceProfile: AmazonSSMRoleForInstancesQuickSetup
+      IamInstanceProfile: !Ref IamInstanceProfile
       BlockDeviceMappings: 
         - DeviceName: /dev/xvda
           Ebs: 
@@ -171,12 +234,12 @@ Resources:
   EIP01:
     Type: AWS::EC2::EIP
     Properties:
-      InstanceId: !Ref EC2Instance01
+      InstanceId: !Ref Ec2Instance01
 
   EIP02:
     Type: AWS::EC2::EIP
     Properties:
-      InstanceId: !Ref EC2Instance02
+      InstanceId: !Ref Ec2Instance02
 
   DNSEntries:
     Type: AWS::Route53::RecordSetGroup
@@ -227,10 +290,10 @@ Resources:
             - !Ref EIP02
 
 Outputs: 
-  EC2Instance01Id:
+  Ec2Instance01Id:
     Description: The EC2 Instance 01 ID (DB)
-    Value: !Ref EC2Instance01
-  EC2Instance02Id:
+    Value: !Ref Ec2Instance01
+  Ec2Instance02Id:
     Description: The EC2 Instance 02 ID (APP)
-    Value: !Ref EC2Instance02
+    Value: !Ref Ec2Instance02
 
