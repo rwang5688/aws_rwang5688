@@ -16,12 +16,12 @@
     "ParameterValue": "ami-0f57b4cec24530068"
   },
   {
-    "ParameterKey": "VpcId",
-    "ParameterValue": "vpc-3540c55e"
+    "ParameterKey": "VpcCidrBlock",
+    "ParameterValue": "10.0.0.0/16"
   },
   {
-    "ParameterKey": "SubnetId",
-    "ParameterValue": "subnet-4256fb29"
+    "ParameterKey": "SubnetCidrBlock",
+    "ParameterValue": "10.0.0.0/24"
   },
   {
     "ParameterKey": "KeyName",
@@ -32,12 +32,16 @@
     "ParameterValue": "mindLAMP-platform-ec2-sg"
   },
   {
-    "ParameterKey": "EC2Instance01Name",
-    "ParameterValue": "mindLAMP-platform-ec2-01-db"
+    "ParameterKey": "SshCidrBlock",
+    "ParameterValue": "52.95.4.0/24"
   },
   {
-    "ParameterKey": "EC2Instance02Name",
-    "ParameterValue": "mindLAMP-platform-ec2-02-app"
+    "ParameterKey": "Ec2Instance01Name",
+    "ParameterValue": "mindLAMP-platform-ec2-01"
+  },
+  {
+    "ParameterKey": "Ec2Instance02Name",
+    "ParameterValue": "mindLAMP-platform-ec2-02"
   }
 ]
 
