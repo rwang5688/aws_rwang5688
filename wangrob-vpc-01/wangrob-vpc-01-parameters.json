@@ -46,7 +46,7 @@
 
   {
     "ParameterKey": "SshCidrBlock",
-    "ParameterValue": "98.33.106.0/24"
+    "ParameterValue": "205.251.233.0/24"
   },
 
   {
