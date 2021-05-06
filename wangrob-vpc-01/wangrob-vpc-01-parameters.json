@@ -10,7 +10,7 @@
 
   {
     "ParameterKey": "PublicSubnet01AvailabilityZone",
-    "ParameterValue": "us-west-2a"
+    "ParameterValue": "us-east-2a"
   },
   {
     "ParameterKey": "PublicSubnet01CidrBlock",
@@ -19,7 +19,7 @@
 
   {
     "ParameterKey": "PrivateSubnet01AvailabilityZone",
-    "ParameterValue": "us-west-2a"
+    "ParameterValue": "us-east-2a"
   },
   {
     "ParameterKey": "PrivateSubnet01CidrBlock",
@@ -28,7 +28,7 @@
 
   {
     "ParameterKey": "PublicSubnet02AvailabilityZone",
-    "ParameterValue": "us-west-2b"
+    "ParameterValue": "us-east-2b"
   },
   {
     "ParameterKey": "PublicSubnet02CidrBlock",
@@ -37,7 +37,7 @@
 
   {
     "ParameterKey": "PrivateSubnet02AvailabilityZone",
-    "ParameterValue": "us-west-2b"
+    "ParameterValue": "us-east-2b"
   },
   {
     "ParameterKey": "PrivateSubnet02CidrBlock",
@@ -46,12 +46,12 @@
 
   {
     "ParameterKey": "SshCidrBlock",
-    "ParameterValue": "205.251.233.0/24"
+    "ParameterValue": "52.95.4.0/24"
   },
 
   {
     "ParameterKey": "ImageId",
-    "ParameterValue": "ami-0cf6f5c8a62fa5da6"
+    "ParameterValue": "ami-0f57b4cec24530068"
   },
   {
     "ParameterKey": "InstanceType",
@@ -59,7 +59,7 @@
   },
   {
     "ParameterKey": "KeyPair",
-    "ParameterValue": "wangrob-ec2-us-west-2"
+    "ParameterValue": "wangrob-ec2-us-east-2"
   }, 
   {
     "ParameterKey": "Ec2Instance01Name",
