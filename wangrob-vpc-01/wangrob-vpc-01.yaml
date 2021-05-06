@@ -394,6 +394,18 @@ Resources:
   Ec2Instance01:
     Type: AWS::EC2::Instance
     Properties:
+      EbsOptimized: true
+      IamInstanceProfile: !Ref IamInstanceProfile
+      ImageId: !Ref ImageId
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyPair
+      SecurityGroupIds:
+        - Ref: PublicSecurityGroup
+      SourceDestCheck: true
+      SubnetId: !Ref PublicSubnet01
+      Tags:
+        - Key: Name
+          Value: !Ref Ec2Instance01Name
       BlockDeviceMappings: 
         - DeviceName: /dev/xvda
           Ebs: 
@@ -407,18 +419,6 @@ Resources:
             VolumeSize: 4096
             VolumeType: gp2
             DeleteOnTermination: false
-      EbsOptimized: true
-      IamInstanceProfile: !Ref IamInstanceProfile
-      ImageId: !Ref ImageId
-      InstanceType: !Ref InstanceType
-      KeyName: !Ref KeyPair
-      SecurityGroupIds:
-        - Ref: PublicSecurityGroup
-      SourceDestCheck: true
-      SubnetId: !Ref PublicSubnet01
-      Tags:
-        - Key: Name
-          Value: !Ref Ec2Instance01Name
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
@@ -448,15 +448,6 @@ Resources:
   Ec2Instance02:
     Type: AWS::EC2::Instance
     Properties:
-      BlockDeviceMappings: 
-        - DeviceName: /dev/xvda
-          Ebs: 
-            Encrypted: false
-            VolumeSize: 30
-            VolumeType: gp2
-            DeleteOnTermination: true
-        - DeviceName: /dev/sdf
-          VirtualName: ephemeral0
       EbsOptimized: true
       IamInstanceProfile: !Ref IamInstanceProfile
       ImageId: !Ref ImageId
@@ -469,6 +460,15 @@ Resources:
       Tags:
         - Key: Name
           Value: !Ref Ec2Instance02Name
+      BlockDeviceMappings: 
+        - DeviceName: /dev/xvda
+          Ebs: 
+            Encrypted: false
+            VolumeSize: 30
+            VolumeType: gp2
+            DeleteOnTermination: true
+        - DeviceName: /dev/sdf
+          VirtualName: ephemeral0
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
