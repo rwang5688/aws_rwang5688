@@ -359,6 +359,16 @@ Resources:
       SourceSecurityGroupId: !Ref PublicSecurityGroup
       Description: 'Docker Overlay'
 
+  PrivateSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId:
+        Ref: VPC
+      GroupDescription: 'Private Security Group'
+      Tags:
+        - Key: Name
+          Value: !Sub "${VpcName}-private-sg"      
+
   IamInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
