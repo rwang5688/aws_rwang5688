@@ -1,0 +1,82 @@
+[
+  {
+    "ParameterKey": "VpcName",
+    "ParameterValue": "wangrob-vpc-01"
+  },
+  {
+    "ParameterKey": "VpcCidrBlock",
+    "ParameterValue": "10.0.0.0/16"
+  },
+
+  {
+    "ParameterKey": "PublicSubnet01AvailabilityZone",
+    "ParameterValue": "us-west-2a"
+  },
+  {
+    "ParameterKey": "PublicSubnet01CidrBlock",
+    "ParameterValue": "10.0.1.0/24"
+  },
+
+  {
+    "ParameterKey": "PrivateSubnet01AvailabilityZone",
+    "ParameterValue": "us-west-2a"
+  },
+  {
+    "ParameterKey": "PrivateSubnet01CidrBlock",
+    "ParameterValue": "10.0.2.0/24"
+  },
+
+  {
+    "ParameterKey": "PublicSubnet02AvailabilityZone",
+    "ParameterValue": "us-west-2b"
+  },
+  {
+    "ParameterKey": "PublicSubnet02CidrBlock",
+    "ParameterValue": "10.0.3.0/24"
+  },
+
+  {
+    "ParameterKey": "PrivateSubnet02AvailabilityZone",
+    "ParameterValue": "us-west-2b"
+  },
+  {
+    "ParameterKey": "PrivateSubnet02CidrBlock",
+    "ParameterValue": "10.0.4.0/24"
+  },
+
+  {
+    "ParameterKey": "SshCidrBlock",
+    "ParameterValue": "98.33.106.0/24"
+  },
+
+  {
+    "ParameterKey": "ImageId",
+    "ParameterValue": "ami-0cf6f5c8a62fa5da6"
+  },
+  {
+    "ParameterKey": "InstanceType",
+    "ParameterValue": "t3.medium"
+  },
+  {
+    "ParameterKey": "KeyPair",
+    "ParameterValue": "wangrob-ec2-us-west-2"
+  }, 
+  {
+    "ParameterKey": "Ec2Instance01Name",
+    "ParameterValue": "wangrob-vpc-01-ec2-01"
+  },
+  {
+    "ParameterKey": "Ec2Instance02Name",
+    "ParameterValue": "wangrob-vpc-01-ec2-02"
+  },
+
+  {
+    "ParameterKey": "HostedZoneId",
+    "ParameterValue": "Z05028892SWHRH407JS0E"
+  },
+  {
+    "ParameterKey": "DomainName",
+    "ParameterValue": "wangrob-vpc-01.octank.edu.rwang5688.com"
+  }
+]
+
