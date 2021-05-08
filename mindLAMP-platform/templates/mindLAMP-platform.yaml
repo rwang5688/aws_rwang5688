@@ -70,16 +70,16 @@ Mappings:
       InstanceType: c5d.2xlarge
 
 Conditions:
-  IsActiveOnly: Equals
+  IsActiveOnly: !Equals
     - !Ref Configuration
     - active-only
-  IsActivePassive10: Equals 
+  IsActivePassive10: !Equals 
     - !Ref Configuration
     - active-passive-10
-  IsActivePassive100: Equals
+  IsActivePassive100: !Equals
     - !Ref Configuration
     - active-passive-100
-  IsActivePassive1000: Equals
+  IsActivePassive1000: !Equals
     - !Ref Configuration
     - active-passive-1000
   CreateEc2Instance01: !Or
@@ -94,8 +94,8 @@ Conditions:
   CreateEc2Instance03: !Or
     - !Condition IsActivePassive100
     - !Condition IsActivePassive1000
-  CreateEc2Instance04: Equals
-    - !Ref Configuratino
+  CreateEc2Instance04: !Equals
+    - !Ref Configuration
     - active-passive-1000
 
 Resources:
