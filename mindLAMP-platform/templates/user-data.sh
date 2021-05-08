@@ -23,9 +23,9 @@ curl https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScrip
 unzip CloudWatchMonitoringScripts-1.2.2.zip
 rm -rf CloudWatchMonitoringScripts-1.2.2.zip
 cd /home/ssm-user/
-curl https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip -O
-unzip CloudWatchMonitoringScripts-1.2.2.zip
-rm -rf CloudWatchMonitoringScripts-1.2.2.zip
+mkdir aws-scripts-mon
+cd aws-scripts-mon
+cp /home/ec2-user/aws-scripts-mon/* .
 
 #   Use the commands below to enable memory metrics monitoring in CloudWatch
 #   /home/ec2-user/aws-scripts-mon/mon-put-instance-data.pl --mem-util --mem-used --mem-avail --verify --verbose
