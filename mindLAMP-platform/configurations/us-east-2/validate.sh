@@ -1,0 +1,1 @@
+validate-mindLAMP-platform.sh
