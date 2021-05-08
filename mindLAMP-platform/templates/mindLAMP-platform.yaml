@@ -334,6 +334,10 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
+          # Print out timestamp
+          cd /home/ec2-user/
+          whoami > whoami.txt
+          date > timestamps.txt
           # install and start Apache
           yum update -y
           yum install -y httpd
@@ -341,6 +345,9 @@ Resources:
           echo "<html><h1>Hello World from ${ProjectName}-ec2-01.</h1></html>" > index.html
           service httpd start
           chkconfig httpd on
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
           # install and start Docker Swarm
           yum install -y docker
           usermod -a -G docker ec2-user
@@ -351,16 +358,17 @@ Resources:
           systemctl daemon-reload
           service docker restart
           docker swarm init
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
           # install CloudWatch monitoring scripts
           yum install -y perl-Switch perl-DateTime perl-Sys-Syslog perl-LWP-Protocol-https perl-Digest-SHA.x86_64
-          cd /home/ec2-user/
           curl https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip -O
           unzip CloudWatchMonitoringScripts-1.2.2.zip
           rm -rf CloudWatchMonitoringScripts-1.2.2.zip
-          cd /home/ssm-user/
-          mkdir aws-scripts-mon
-          cd aws-scripts-mon
-          cp /home/ec2-user/aws-scripts-mon/* .
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
 
   Ec2Instance02:
     Type: AWS::EC2::Instance
@@ -392,6 +400,10 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
+          # Print out timestamp
+          cd /home/ec2-user/
+          whoami > whoami.txt
+          date > timestamps.txt
           # install and start Apache
           yum update -y
           yum install -y httpd
@@ -399,6 +411,9 @@ Resources:
           echo "<html><h1>Hello World from ${ProjectName}-ec2-02.</h1></html>" > index.html
           service httpd start
           chkconfig httpd on
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
           # install and start Docker Swarm
           yum install -y docker
           usermod -a -G docker ec2-user
@@ -409,16 +424,17 @@ Resources:
           systemctl daemon-reload
           service docker restart
           docker swarm init
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
           # install CloudWatch monitoring scripts
           yum install -y perl-Switch perl-DateTime perl-Sys-Syslog perl-LWP-Protocol-https perl-Digest-SHA.x86_64
-          cd /home/ec2-user/
           curl https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip -O
           unzip CloudWatchMonitoringScripts-1.2.2.zip
           rm -rf CloudWatchMonitoringScripts-1.2.2.zip
-          cd /home/ssm-user/
-          mkdir aws-scripts-mon
-          cd aws-scripts-mon
-          cp /home/ec2-user/aws-scripts-mon/* .
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
 
   Ec2Instance03:
     Type: AWS::EC2::Instance
@@ -450,6 +466,10 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
+          # Print out timestamp
+          cd /home/ec2-user/
+          whoami > whoami.txt
+          date > timestamps.txt
           # install and start Apache
           yum update -y
           yum install -y httpd
@@ -457,6 +477,9 @@ Resources:
           echo "<html><h1>Hello World from ${ProjectName}-ec2-03.</h1></html>" > index.html
           service httpd start
           chkconfig httpd on
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
           # install and start Docker Swarm
           yum install -y docker
           usermod -a -G docker ec2-user
@@ -467,16 +490,17 @@ Resources:
           systemctl daemon-reload
           service docker restart
           docker swarm init
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
           # install CloudWatch monitoring scripts
           yum install -y perl-Switch perl-DateTime perl-Sys-Syslog perl-LWP-Protocol-https perl-Digest-SHA.x86_64
-          cd /home/ec2-user/
           curl https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip -O
           unzip CloudWatchMonitoringScripts-1.2.2.zip
           rm -rf CloudWatchMonitoringScripts-1.2.2.zip
-          cd /home/ssm-user/
-          mkdir aws-scripts-mon
-          cd aws-scripts-mon
-          cp /home/ec2-user/aws-scripts-mon/* .
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
 
   Ec2Instance04:
     Type: AWS::EC2::Instance
@@ -508,6 +532,10 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
+          # Print out timestamp
+          cd /home/ec2-user/
+          whoami > whoami.txt
+          date > timestamps.txt
           # install and start Apache
           yum update -y
           yum install -y httpd
@@ -515,6 +543,9 @@ Resources:
           echo "<html><h1>Hello World from ${ProjectName}-ec2-04.</h1></html>" > index.html
           service httpd start
           chkconfig httpd on
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
           # install and start Docker Swarm
           yum install -y docker
           usermod -a -G docker ec2-user
@@ -525,16 +556,17 @@ Resources:
           systemctl daemon-reload
           service docker restart
           docker swarm init
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
           # install CloudWatch monitoring scripts
           yum install -y perl-Switch perl-DateTime perl-Sys-Syslog perl-LWP-Protocol-https perl-Digest-SHA.x86_64
-          cd /home/ec2-user/
           curl https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip -O
           unzip CloudWatchMonitoringScripts-1.2.2.zip
           rm -rf CloudWatchMonitoringScripts-1.2.2.zip
-          cd /home/ssm-user/
-          mkdir aws-scripts-mon
-          cd aws-scripts-mon
-          cp /home/ec2-user/aws-scripts-mon/* .
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
 
   EIP01:
     Type: AWS::EC2::EIP
