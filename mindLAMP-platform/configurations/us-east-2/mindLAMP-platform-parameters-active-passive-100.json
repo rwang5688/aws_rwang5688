@@ -30,10 +30,6 @@
   {
     "ParameterKey": "KeyPair",
     "ParameterValue": "wangrob-ec2-us-east-2"
-  },
-  {
-    "ParameterKey": "SshCidrBlock",
-    "ParameterValue": "52.95.4.0/24"
   }
 ]
 
