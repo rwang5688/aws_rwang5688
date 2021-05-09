@@ -1,0 +1,35 @@
+[
+  {
+    "ParameterKey": "ProjectName",
+    "ParameterValue": "mindLAMP-platform"
+  },
+  {
+    "ParameterKey": "Configuration",
+    "ParameterValue": "active-passive-1000"
+  },
+  {
+    "ParameterKey": "VpcCidrBlock",
+    "ParameterValue": "10.0.0.0/16"
+  },
+  {
+    "ParameterKey": "PublicSubnet01CidrBlock",
+    "ParameterValue": "10.0.1.0/24"
+  },
+  {
+    "ParameterKey": "PublicSubnet02CidrBlock",
+    "ParameterValue": "10.0.2.0/24"
+  },
+  {
+    "ParameterKey": "HostedZoneId",
+    "ParameterValue": "Z05028892SWHRH407JS0E"
+  },
+  {
+    "ParameterKey": "DomainName",
+    "ParameterValue": "mindLAMP.octank.edu.rwang5688.com"
+  },
+  {
+    "ParameterKey": "KeyPair",
+    "ParameterValue": "wangrob-ec2-us-west-2"
+  }
+]
+
