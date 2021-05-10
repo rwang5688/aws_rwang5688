@@ -1,7 +1,7 @@
 [
   {
     "ParameterKey": "ProjectName",
-    "ParameterValue": "mindLAMP-platform"
+    "ParameterValue": "mindLAMP-platform-v1"
   },
   {
     "ParameterKey": "Configuration",
@@ -25,7 +25,7 @@
   },
   {
     "ParameterKey": "DomainName",
-    "ParameterValue": "mindLAMP.octank.edu.rwang5688.com"
+    "ParameterValue": "mindLAMP-platform-v1.octank.edu.rwang5688.com"
   },
   {
     "ParameterKey": "KeyPair",
