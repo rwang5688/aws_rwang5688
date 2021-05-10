@@ -1,0 +1,724 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: mindLAMP Platform v1
+
+Parameters:
+  ProjectName:
+    Description: Project name that will be used as the prefix for all deployed resources
+    Type: String
+    ConstraintDescription: Project name that will be used as the prefix for all deployed resources
+    Default: 'mindLAMP-platform-v1'
+  Configuration:
+    Description: Configuration that will be deployed
+    Type: String
+    ConstraintDescription: Configuration that will be deployed
+    AllowedValues:
+      - active-only
+      - active-passive-10
+      - active-passive-100
+      - active-passive-1000
+    Default: 'active-passive-10'
+  VpcCidrBlock:
+    Description: VPC CIDR Block
+    Type: String
+    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
+    ConstraintDescription: VPC CIDR Block
+    Default: '10.0.0.0/16'
+  PublicSubnet01CidrBlock:
+    Description: Public Subnet 01 CIDR Block
+    Type: String
+    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
+    ConstraintDescription: Public Subnet 01 CIDR Block
+    Default: '10.0.1.0/24'
+  PublicSubnet02CidrBlock:
+    Description: Public Subnet 02 CIDR Block
+    Type: String
+    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
+    ConstraintDescription: Public Subnet 02 CIDR Block
+    Default: '10.0.2.0/24'
+  HostedZoneId:
+    Description: Hosted zone id
+    Type: String
+    ConstraintDescription: Hosted zone id
+  DomainName:
+    Description: Domain name
+    Type: String
+    ConstraintDescription: Domain name
+  AmiId:
+    Description: The ID of the AMI.
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    ConstraintDescription: The ID of the AMI.
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+  KeyPair:
+    Description: SSH KeyPair Name
+    Type: 'AWS::EC2::KeyPair::KeyName'
+    ConstraintDescription: Provide the name of an existing SSH key pair
+
+Mappings:
+  ConfigurationMap:
+    active-only:
+      InstanceType: t3.medium
+    active-passive-10:
+      InstanceType: c5.large
+    active-passive-100:
+      InstanceType: c5d.large
+    active-passive-1000:
+      InstanceType: c5d.2xlarge
+
+Conditions:
+  IsActiveOnly: !Equals
+    - !Ref Configuration
+    - active-only
+  IsActivePassive10: !Equals 
+    - !Ref Configuration
+    - active-passive-10
+  IsActivePassive100: !Equals
+    - !Ref Configuration
+    - active-passive-100
+  IsActivePassive1000: !Equals
+    - !Ref Configuration
+    - active-passive-1000
+  CreateEc2Instance01: !Or
+    - !Condition IsActiveOnly
+    - !Condition IsActivePassive10
+    - !Condition IsActivePassive100
+    - !Condition IsActivePassive1000
+  CreateEc2Instance02: !Or
+    - !Condition IsActivePassive10
+    - !Condition IsActivePassive100
+    - !Condition IsActivePassive1000
+  CreateEc2Instance03: !Or
+    - !Condition IsActivePassive100
+    - !Condition IsActivePassive1000
+  CreateEc2Instance04: !Equals
+    - !Ref Configuration
+    - active-passive-1000
+
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCidrBlock
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-vpc
+
+  PublicSubnet01:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: VPC
+      AvailabilityZone: 
+        Fn::Select: 
+          - 0
+          - Fn::GetAZs: !Ref AWS::Region
+      CidrBlock: !Ref PublicSubnet01CidrBlock
+      MapPublicIpOnLaunch: 'True'
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-vpc-subnet-01
+  PublicSubnet02:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: VPC
+      AvailabilityZone: 
+        Fn::Select: 
+          - 1
+          - Fn::GetAZs: !Ref AWS::Region
+      CidrBlock: !Ref PublicSubnet02CidrBlock
+      MapPublicIpOnLaunch: 'True'
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-vpc-subnet-02
+
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-vpc-rt
+  Subnet01RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: RouteTable
+      SubnetId:
+        Ref: PublicSubnet01
+  Subnet02RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: RouteTable
+      SubnetId:
+        Ref: PublicSubnet02
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-vpc-igw  
+  VPCGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: VPC
+      InternetGatewayId:
+        Ref: InternetGateway
+  IgwRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: InternetGateway
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId:
+        Ref: VPC
+      GroupName: !Sub ${ProjectName}-vpc-sg
+      GroupDescription: 'mindLAMP EC2 Security Group'
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-vpc-sg
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+        Description: 'HTTP IPv4'
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIpv6: ::/0
+        Description: 'HTTP IPv6'
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+        Description: 'HTTPS IPv4'
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIpv6: ::/0
+        Description: 'HTTPS IPv6'
+  SecurityGroupIngress03:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: 
+        Ref: SecurityGroup
+      IpProtocol: tcp
+      FromPort: 2375
+      ToPort: 2375
+      SourceSecurityGroupId: !Ref SecurityGroup
+      Description: 'Docker Daemon'
+  SecurityGroupIngress04:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: 
+        Ref: SecurityGroup
+      IpProtocol: tcp
+      FromPort: 2376
+      ToPort: 2376
+      SourceSecurityGroupId: !Ref SecurityGroup
+      Description: 'Docker Machine'
+  SecurityGroupIngress05:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: 
+        Ref: SecurityGroup
+      IpProtocol: tcp
+      FromPort: 2377
+      ToPort: 2377
+      SourceSecurityGroupId: !Ref SecurityGroup
+      Description: 'Docker Swarm'
+  SecurityGroupIngress06:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: 
+        Ref: SecurityGroup
+      IpProtocol: tcp
+      FromPort: 7946
+      ToPort: 7946
+      SourceSecurityGroupId: !Ref SecurityGroup
+      Description: 'Docker Swarm'
+  SecurityGroupIngress07:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: 
+        Ref: SecurityGroup
+      IpProtocol: udp
+      FromPort: 7946
+      ToPort: 7946
+      SourceSecurityGroupId: !Ref SecurityGroup
+      Description: 'Docker Swarm'
+  SecurityGroupIngress08:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: 
+        Ref: SecurityGroup
+      IpProtocol: udp
+      FromPort: 4789
+      ToPort: 4789
+      SourceSecurityGroupId: !Ref SecurityGroup
+      Description: 'Docker Overlay'
+
+  Ec2InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2008-10-17'
+        Statement:
+        - Sid: ''
+          Effect: Allow
+          Principal:
+            Service: ec2.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+      - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      - arn:aws:iam::aws:policy/AmazonDocDBFullAccess
+      - arn:aws:iam::aws:policy/AmazonS3FullAccess
+  IamInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+      - Ref: Ec2InstanceRole
+
+  Ec2Instance01:
+    Type: AWS::EC2::Instance
+    Condition: CreateEc2Instance01
+    Properties:
+      ImageId: !Ref AmiId
+      InstanceType: !FindInMap
+        - ConfigurationMap
+        - !Ref Configuration
+        - InstanceType
+      EbsOptimized: true
+      SubnetId: !Ref PublicSubnet01
+      IamInstanceProfile: !Ref IamInstanceProfile
+      BlockDeviceMappings: 
+        - DeviceName: /dev/xvda
+          Ebs: 
+            Encrypted: false
+            VolumeSize: 30
+            VolumeType: gp2
+            DeleteOnTermination: true
+        - DeviceName: /dev/sdf
+          Ebs: 
+            Encrypted: true
+            VolumeSize: 4096
+            VolumeType: gp2
+            DeleteOnTermination: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-ec2-01
+      SecurityGroupIds:
+        - Ref: SecurityGroup
+      KeyName: !Ref KeyPair
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          # Print out timestamp
+          cd /home/ec2-user/
+          whoami > whoami.txt
+          date > timestamps.txt
+          # install and start Apache
+          yum update -y
+          yum install -y httpd
+          cd /var/www/html
+          echo "<html><h1>Hello World from ${ProjectName}-ec2-01.</h1></html>" > index.html
+          service httpd start
+          chkconfig httpd on
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
+          # install and start Docker Swarm
+          yum install -y docker
+          usermod -a -G docker ec2-user
+          usermod -a -G docker ssm-user
+          hostnamectl set-hostname ${DomainName}
+          mkdir /etc/systemd/system/docker.service.d
+          printf "[Service]\nExecStart=\nExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H fd:// --containerd=/run/containerd/containerd.sock\n" | tee /etc/systemd/system/docker.service.d/override.conf
+          systemctl daemon-reload
+          service docker restart
+          docker swarm init
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
+          # install CloudWatch monitoring scripts
+          yum install -y perl-Switch perl-DateTime perl-Sys-Syslog perl-LWP-Protocol-https perl-Digest-SHA.x86_64
+          curl https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip -O
+          unzip CloudWatchMonitoringScripts-1.2.2.zip
+          rm -rf CloudWatchMonitoringScripts-1.2.2.zip
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
+
+  Ec2Instance02:
+    Type: AWS::EC2::Instance
+    Condition: CreateEc2Instance02
+    Properties:
+      ImageId: !Ref AmiId
+      InstanceType: !FindInMap
+        - ConfigurationMap
+        - !Ref Configuration
+        - InstanceType
+      EbsOptimized: true
+      SubnetId: !Ref PublicSubnet02
+      IamInstanceProfile: !Ref IamInstanceProfile
+      BlockDeviceMappings: 
+        - DeviceName: /dev/xvda
+          Ebs: 
+            Encrypted: false
+            VolumeSize: 30
+            VolumeType: gp2
+            DeleteOnTermination: true
+        - DeviceName: /dev/sdf
+          VirtualName: ephemeral0
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-ec2-02
+      SecurityGroupIds:
+        - Ref: SecurityGroup
+      KeyName: !Ref KeyPair
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          # Print out timestamp
+          cd /home/ec2-user/
+          whoami > whoami.txt
+          date > timestamps.txt
+          # install and start Apache
+          yum update -y
+          yum install -y httpd
+          cd /var/www/html
+          echo "<html><h1>Hello World from ${ProjectName}-ec2-02.</h1></html>" > index.html
+          service httpd start
+          chkconfig httpd on
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
+          # install and start Docker Swarm
+          yum install -y docker
+          usermod -a -G docker ec2-user
+          usermod -a -G docker ssm-user
+          hostnamectl set-hostname ${DomainName}
+          mkdir /etc/systemd/system/docker.service.d
+          printf "[Service]\nExecStart=\nExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H fd:// --containerd=/run/containerd/containerd.sock\n" | tee /etc/systemd/system/docker.service.d/override.conf
+          systemctl daemon-reload
+          service docker restart
+          docker swarm init
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
+          # install CloudWatch monitoring scripts
+          yum install -y perl-Switch perl-DateTime perl-Sys-Syslog perl-LWP-Protocol-https perl-Digest-SHA.x86_64
+          curl https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip -O
+          unzip CloudWatchMonitoringScripts-1.2.2.zip
+          rm -rf CloudWatchMonitoringScripts-1.2.2.zip
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
+
+  Ec2Instance03:
+    Type: AWS::EC2::Instance
+    Condition: CreateEc2Instance03
+    Properties:
+      ImageId: !Ref AmiId
+      InstanceType: !FindInMap
+        - ConfigurationMap
+        - !Ref Configuration
+        - InstanceType
+      EbsOptimized: true
+      SubnetId: !Ref PublicSubnet01
+      IamInstanceProfile: !Ref IamInstanceProfile
+      BlockDeviceMappings: 
+        - DeviceName: /dev/xvda
+          Ebs: 
+            Encrypted: false
+            VolumeSize: 30
+            VolumeType: gp2
+            DeleteOnTermination: true
+        - DeviceName: /dev/sdf
+          VirtualName: ephemeral0
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-ec2-03
+      SecurityGroupIds:
+        - Ref: SecurityGroup
+      KeyName: !Ref KeyPair
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          # Print out timestamp
+          cd /home/ec2-user/
+          whoami > whoami.txt
+          date > timestamps.txt
+          # install and start Apache
+          yum update -y
+          yum install -y httpd
+          cd /var/www/html
+          echo "<html><h1>Hello World from ${ProjectName}-ec2-03.</h1></html>" > index.html
+          service httpd start
+          chkconfig httpd on
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
+          # install and start Docker Swarm
+          yum install -y docker
+          usermod -a -G docker ec2-user
+          usermod -a -G docker ssm-user
+          hostnamectl set-hostname ${DomainName}
+          mkdir /etc/systemd/system/docker.service.d
+          printf "[Service]\nExecStart=\nExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H fd:// --containerd=/run/containerd/containerd.sock\n" | tee /etc/systemd/system/docker.service.d/override.conf
+          systemctl daemon-reload
+          service docker restart
+          docker swarm init
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
+          # install CloudWatch monitoring scripts
+          yum install -y perl-Switch perl-DateTime perl-Sys-Syslog perl-LWP-Protocol-https perl-Digest-SHA.x86_64
+          curl https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip -O
+          unzip CloudWatchMonitoringScripts-1.2.2.zip
+          rm -rf CloudWatchMonitoringScripts-1.2.2.zip
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
+
+  Ec2Instance04:
+    Type: AWS::EC2::Instance
+    Condition: CreateEc2Instance04
+    Properties:
+      ImageId: !Ref AmiId
+      InstanceType: !FindInMap
+        - ConfigurationMap
+        - !Ref Configuration
+        - InstanceType
+      EbsOptimized: true
+      SubnetId: !Ref PublicSubnet02
+      IamInstanceProfile: !Ref IamInstanceProfile
+      BlockDeviceMappings: 
+        - DeviceName: /dev/xvda
+          Ebs: 
+            Encrypted: false
+            VolumeSize: 30
+            VolumeType: gp2
+            DeleteOnTermination: true
+        - DeviceName: /dev/sdf
+          VirtualName: ephemeral0
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-ec2-04
+      SecurityGroupIds:
+        - Ref: SecurityGroup
+      KeyName: !Ref KeyPair
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          # Print out timestamp
+          cd /home/ec2-user/
+          whoami > whoami.txt
+          date > timestamps.txt
+          # install and start Apache
+          yum update -y
+          yum install -y httpd
+          cd /var/www/html
+          echo "<html><h1>Hello World from ${ProjectName}-ec2-04.</h1></html>" > index.html
+          service httpd start
+          chkconfig httpd on
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
+          # install and start Docker Swarm
+          yum install -y docker
+          usermod -a -G docker ec2-user
+          usermod -a -G docker ssm-user
+          hostnamectl set-hostname ${DomainName}
+          mkdir /etc/systemd/system/docker.service.d
+          printf "[Service]\nExecStart=\nExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H fd:// --containerd=/run/containerd/containerd.sock\n" | tee /etc/systemd/system/docker.service.d/override.conf
+          systemctl daemon-reload
+          service docker restart
+          docker swarm init
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
+          # install CloudWatch monitoring scripts
+          yum install -y perl-Switch perl-DateTime perl-Sys-Syslog perl-LWP-Protocol-https perl-Digest-SHA.x86_64
+          curl https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip -O
+          unzip CloudWatchMonitoringScripts-1.2.2.zip
+          rm -rf CloudWatchMonitoringScripts-1.2.2.zip
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
+
+  EIP01:
+    Type: AWS::EC2::EIP
+    Condition: CreateEc2Instance01
+    Properties:
+      InstanceId: !Ref Ec2Instance01
+  EIP02:
+    Type: AWS::EC2::EIP
+    Condition: CreateEc2Instance02
+    Properties:
+      InstanceId: !Ref Ec2Instance02
+  EIP03:
+    Type: AWS::EC2::EIP
+    Condition: CreateEc2Instance03
+    Properties:
+      InstanceId: !Ref Ec2Instance03
+  EIP04:
+    Type: AWS::EC2::EIP
+    Condition: CreateEc2Instance04
+    Properties:
+      InstanceId: !Ref Ec2Instance04
+
+  DNSEntries01:
+    Type: AWS::Route53::RecordSetGroup
+    Condition: CreateEc2Instance01
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      RecordSets:
+        - Name: !Ref DomainName
+          Type: A
+          TTL: 300
+          MultiValueAnswer: true
+          SetIdentifier: node-01
+          ResourceRecords: 
+            - !Ref EIP01
+        - Name: !Sub "*.${DomainName}"
+          Type: A
+          TTL: 300
+          MultiValueAnswer: true
+          SetIdentifier: node-01
+          ResourceRecords: 
+            - !Ref EIP01
+        - Name: !Sub "node-01.${DomainName}"
+          Type: A
+          TTL: 300
+          MultiValueAnswer: true
+          SetIdentifier: node-01
+          ResourceRecords: 
+            - !Ref EIP01
+  DNSEntries02:
+    Type: AWS::Route53::RecordSetGroup
+    Condition: CreateEc2Instance02    
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      RecordSets:
+        - Name: !Ref DomainName
+          Type: A
+          TTL: 300
+          MultiValueAnswer: true
+          SetIdentifier: node-02
+          ResourceRecords: 
+            - !Ref EIP02
+        - Name: !Sub "*.${DomainName}"
+          Type: A
+          TTL: 300
+          MultiValueAnswer: true
+          SetIdentifier: node-02
+          ResourceRecords: 
+            - !Ref EIP02
+        - Name: !Sub "node-02.${DomainName}"
+          Type: A
+          TTL: 300
+          MultiValueAnswer: true
+          SetIdentifier: node-02
+          ResourceRecords: 
+            - !Ref EIP02
+  DNSEntries03:
+    Type: AWS::Route53::RecordSetGroup
+    Condition: CreateEc2Instance03
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      RecordSets:
+        - Name: !Ref DomainName
+          Type: A
+          TTL: 300
+          MultiValueAnswer: true
+          SetIdentifier: node-03
+          ResourceRecords: 
+            - !Ref EIP03
+        - Name: !Sub "*.${DomainName}"
+          Type: A
+          TTL: 300
+          MultiValueAnswer: true
+          SetIdentifier: node-03
+          ResourceRecords: 
+            - !Ref EIP03
+        - Name: !Sub "node-03.${DomainName}"
+          Type: A
+          TTL: 300
+          MultiValueAnswer: true
+          SetIdentifier: node-03
+          ResourceRecords: 
+            - !Ref EIP03
+  DNSEntries04:
+    Type: AWS::Route53::RecordSetGroup
+    Condition: CreateEc2Instance04
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      RecordSets:
+        - Name: !Ref DomainName
+          Type: A
+          TTL: 300
+          MultiValueAnswer: true
+          SetIdentifier: node-04
+          ResourceRecords: 
+            - !Ref EIP04
+        - Name: !Sub "*.${DomainName}"
+          Type: A
+          TTL: 300
+          MultiValueAnswer: true
+          SetIdentifier: node-04
+          ResourceRecords: 
+            - !Ref EIP04
+        - Name: !Sub "node-04.${DomainName}"
+          Type: A
+          TTL: 300
+          MultiValueAnswer: true
+          SetIdentifier: node-04
+          ResourceRecords: 
+            - !Ref EIP04
+
+Outputs:
+  Ec2Instance01Id:
+    Condition: CreateEc2Instance01
+    Description: EC2 Instance 01 Id
+    Value: !Ref Ec2Instance01
+  Ec2Instance02Id:
+    Condition: CreateEc2Instance02
+    Description: EC2 Instance 02 Id
+    Value: !Ref Ec2Instance02
+  Ec2Instance03Id:
+    Condition: CreateEc2Instance03
+    Description: EC2 Instance 03 Id
+    Value: !Ref Ec2Instance03
+  Ec2Instance04Id:
+    Condition: CreateEc2Instance04
+    Description: EC2 Instance 04 Id
+    Value: !Ref Ec2Instance04
+  EIP01:
+    Condition: CreateEc2Instance01
+    Description: Elastic IP 01
+    Value: !Ref EIP01
+  EIP02:
+    Condition: CreateEc2Instance02
+    Description: Elastic IP 02
+    Value: !Ref EIP02
+  EIP03:
+    Condition: CreateEc2Instance03
+    Description: Elastic IP 03
+    Value: !Ref EIP03
+  EIP04:
+    Condition: CreateEc2Instance04
+    Description: Elastic IP 04
+    Value: !Ref EIP04
+
