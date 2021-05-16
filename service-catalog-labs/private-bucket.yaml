@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Private Bucket
+
+Parameters:
+  BucketName:
+    Description: Globally unique bucket name
+    Type: String
+    ConstraintDescription: Globally unique bucket name
+
+Resources:
+  PrivateBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      AccessControl: Private
+      BucketName: !Ref BucketName
+
+Outputs: 
+  PrivateBucketName:
+    Description: Private Bucket Name
+    Value: !Ref PrivateBucket
+  PrivateBucketArn:
+    Description: Private Bucket ARN
+    Value: !GetAtt PrivateBucket.Arn
+
