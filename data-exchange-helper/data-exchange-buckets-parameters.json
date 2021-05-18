@@ -1,0 +1,11 @@
+[
+  {
+    "ParameterKey": "DataExchangeName",
+    "ParameterValue": "wangrob-data-exchange"
+  },
+  {
+    "ParameterKey": "RetentionPeriodDays",
+    "ParameterValue": "730"
+  }
+]
+
