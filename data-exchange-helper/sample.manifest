@@ -1,0 +1,21 @@
+{
+    "Manifest": {
+        "Version":"1.0",
+        "ProductId":"my-product-id",
+        "DatasetId":"my-data-set-id",
+        "Assets": [
+            {
+                "Bucket": "wangrob-data-exchange-375205257662-us-east-1-asset",
+                "Key": "sample0.csv"
+            },
+            {
+                "Bucket": "wangrob-data-exchange-375205257662-us-east-1-asset",
+                "Key": "sample1.csv"
+            },
+            {
+                "Bucket": "wangrob-data-exchange-375205257662-us-east-1-asset",
+                "Key": "sample2.csv"
+            }
+        ]
+    }
+}

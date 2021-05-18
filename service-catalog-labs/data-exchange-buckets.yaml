@@ -1,0 +1,173 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Data Exchange Buckets
+
+Parameters:
+  DataExchangeName:
+    Description: Data Exchange Name 
+    Type: String
+    ConstraintDescription: Data Exchange Name
+  RetentionPeriodDays:
+    Type: Number
+    Description: Specify the number of days to retain log files (e.g. 730)
+    Default: 730
+
+Resources:
+  ManifestBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Join
+        - "-"
+        - - !Sub ${DataExchangeName}
+          - !Ref "AWS::AccountId"
+          -
+            Fn::Sub:
+              ${AWS::Region}
+          - "manifest"
+      BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+      LoggingConfiguration:
+        DestinationBucketName: !Ref ManifestLogsBucket
+        LogFilePrefix: !Join
+          - "-"
+          - - !Sub s3-access-logs/${DataExchangeName}
+            - !Ref "AWS::AccountId"
+            -
+              Fn::Sub:
+                ${AWS::Region}/
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+      VersioningConfiguration:
+        Status: Enabled
+
+  ManifestLogsBucket:
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join
+        - "-"
+        - - !Sub ${DataExchangeName}
+          - !Ref "AWS::AccountId"
+          -
+            Fn::Sub:
+              ${AWS::Region}
+          - "manifest"
+          - "logs"
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - ExpirationInDays: !Ref RetentionPeriodDays
+            Id: Object expiration policy
+            Status: Enabled
+      AccessControl: LogDeliveryWrite
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+      VersioningConfiguration:
+        Status: Enabled
+
+  AssetBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Join
+        - "-"
+        - - !Sub ${DataExchangeName}
+          - !Ref "AWS::AccountId"
+          -
+            Fn::Sub:
+              ${AWS::Region}
+          - "asset"
+      BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+      LoggingConfiguration:
+        DestinationBucketName: !Ref AssetLogsBucket
+        LogFilePrefix: !Join
+          - "-"
+          - - !Sub s3-access-logs/${DataExchangeName}
+            - !Ref "AWS::AccountId"
+            -
+              Fn::Sub:
+                ${AWS::Region}/
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+      VersioningConfiguration:
+        Status: Enabled
+
+  AssetLogsBucket:
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join
+        - "-"
+        - - !Sub ${DataExchangeName}
+          - !Ref "AWS::AccountId"
+          -
+            Fn::Sub:
+              ${AWS::Region}
+          - "asset"
+          - "logs"
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - ExpirationInDays: !Ref RetentionPeriodDays
+            Id: Object expiration policy
+            Status: Enabled
+      AccessControl: LogDeliveryWrite
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+      VersioningConfiguration:
+        Status: Enabled
+
+Outputs: 
+  ManifestBucketName:
+    Description: Manifest Bucket Name
+    Value: !Ref ManifestBucket
+  ManifestBucketArn:
+    Description: Manifest Bucket ARN
+    Value: !GetAtt ManifestBucket.Arn
+  ManifestLogsBucketName:
+    Description: Manifest Logs Bucket Name
+    Value: !Ref ManifestLogsBucket
+  ManifestLogsBucketArn:
+    Description: Manifest Logs Bucket ARN
+    Value: !GetAtt ManifestLogsBucket.Arn
+  AssetBucketName:
+    Description: Asset Bucket Name
+    Value: !Ref AssetBucket
+  AssetBucketArn:
+    Description: Asset Bucket ARN
+    Value: !GetAtt AssetBucket.Arn
+  AssetLogsBucketName:
+    Description: Asset Logs Bucket Name
+    Value: !Ref AssetLogsBucket
+  AssetLogsBucketArn:
+    Description: Asset Logs Bucket ARN
+    Value: !GetAtt AssetLogsBucket.Arn
+
