@@ -5,15 +5,15 @@
         "DatasetId":"my-data-set-id",
         "Assets": [
             {
-                "Bucket": "wangrob-data-exchange-aseet-375205257662-us-east-1",
+                "Bucket": "<asset-bucket-name>",
                 "Key": "sample0.csv"
             },
             {
-                "Bucket": "wangrob-data-exchange-asset-375205257662-us-east-1",
+                "Bucket": "<asset-bucket-name>",
                 "Key": "sample1.csv"
             },
             {
-                "Bucket": "wangrob-data-exchange-asset-375205257662-us-east-1",
+                "Bucket": "<asset-bucket-name>",
                 "Key": "sample2.csv"
             }
         ]

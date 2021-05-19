@@ -3,6 +3,7 @@ import json
 import copy
 import uuid
 from pathlib import Path
+import s3util
 
 
 def parse_arguments():
@@ -45,14 +46,22 @@ def main():
     if revision_manifest is None:
         print('get_json_data failed.  Exit.')
         return
+    print('%s:' % revision_manifest_file_name)
+    print(revision_manifest)
 
-    revision = copy.deepcopy(revision_manifest)
-    print('Revision:')
-    print(revision)
+    manifest = revision_manifest['Manifest']
+    if manifest is None:
+        print('Manifest does not exist.  Exit.')
+        return
 
-    manifest = revision['Manifest']
-    print('Manifest:')
-    print(manifest)
+    assets = manifest['Assets']
+    if assets is None:
+        print('Assets does not exist.  Exit.')
+        return    
+    print('Assets:')
+    print(assets)
+
+    s3util.list_buckets()
 
 
 if __name__ == '__main__':
