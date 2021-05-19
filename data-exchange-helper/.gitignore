@@ -146,5 +146,4 @@ cython_debug/
 env-cn*.sh
 env-us*.sh
 *wangrob.json
-*wangrob.manifest
 
