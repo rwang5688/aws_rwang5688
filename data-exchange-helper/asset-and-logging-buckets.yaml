@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Data Exchange Buckets
+Description: Asset and Logging Buckets
 
 Parameters:
   DataExchange:
@@ -14,8 +14,6 @@ Parameters:
 
 Resources:
   ManifestBucketLoggingBucket:
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Join
@@ -47,8 +45,6 @@ Resources:
 
   AssetBucket:
     Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
     Properties:
       BucketName: !Join
         - "-"
@@ -81,8 +77,6 @@ Resources:
         Status: Enabled
 
   AssetBucketLoggingBucket:
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Join
