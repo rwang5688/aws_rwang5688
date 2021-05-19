@@ -17,6 +17,8 @@ Parameters:
 Resources:
   DeploymentBucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       BucketName:
         Ref: ManifestBucket
@@ -65,3 +67,4 @@ Outputs:
   ManifestBucketArn:
     Description: Manifest Bucket ARN
     Value: !GetAtt DeploymentBucket.Arn
+
