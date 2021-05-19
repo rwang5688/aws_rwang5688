@@ -15,15 +15,16 @@ Parameters:
 Resources:
   ManifestBucketLoggingBucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       BucketName: !Join
         - "-"
-        - - !Sub ${DataExchange}
+        - - !Sub ${DataExchange}-manifest
           - !Ref "AWS::AccountId"
           -
             Fn::Sub:
               ${AWS::Region}
-          - "manifest"
           - "logs"
       BucketEncryption:
         ServerSideEncryptionConfiguration:
@@ -45,15 +46,16 @@ Resources:
 
   AssetBucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       BucketName: !Join
         - "-"
-        - - !Sub ${DataExchange}
+        - - !Sub ${DataExchange}-asset
           - !Ref "AWS::AccountId"
           -
             Fn::Sub:
               ${AWS::Region}
-          - "asset"
       BucketEncryption:
           ServerSideEncryptionConfiguration:
             - ServerSideEncryptionByDefault:
@@ -62,12 +64,11 @@ Resources:
         DestinationBucketName: !Ref AssetBucketLoggingBucket
         LogFilePrefix: !Join
           - "-"
-          - - !Sub s3-access-logs/${DataExchange}
+          - - !Sub s3-access-logs/${DataExchange}-asset
             - !Ref "AWS::AccountId"
             -
               Fn::Sub:
                 ${AWS::Region}/
-            - "asset"
       PublicAccessBlockConfiguration:
         BlockPublicAcls: True
         BlockPublicPolicy: True
@@ -77,16 +78,17 @@ Resources:
         Status: Enabled
 
   AssetBucketLoggingBucket:
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Join
         - "-"
-        - - !Sub ${DataExchange}
+        - - !Sub ${DataExchange}-asset
           - !Ref "AWS::AccountId"
           -
             Fn::Sub:
               ${AWS::Region}
-          - "asset"
           - "logs"
       BucketEncryption:
         ServerSideEncryptionConfiguration:
@@ -111,12 +113,11 @@ Outputs:
     Description: Manifest Bucket
     Value: !Join
         - "-"
-        - - !Sub ${DataExchange}
+        - - !Sub ${DataExchange}-manifest
           - !Ref "AWS::AccountId"
           -
             Fn::Sub:
               ${AWS::Region}
-          - "manifest"
   ManifestBucketLoggingBucket:
     Description: Manifest Bucket Logging Bucket
     Value: !Ref ManifestBucketLoggingBucket
@@ -127,12 +128,11 @@ Outputs:
     Description: Manifest Bucket Logging Prefix
     Value: !Join
           - "-"
-          - - !Sub s3-access-logs/${DataExchange}
+          - - !Sub s3-access-logs/${DataExchange}-manifest
             - !Ref "AWS::AccountId"
             -
               Fn::Sub:
                 ${AWS::Region}/
-            - "manifest"
   AssetBucket:
     Description: Asset Bucket
     Value: !Ref AssetBucket
