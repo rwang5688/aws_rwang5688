@@ -1,0 +1,15 @@
+[
+  {
+    "ParameterKey": "ManifestBucket",
+    "ParameterValue": "<manifest-bucket-name>"
+  },
+  {
+    "ParameterKey": "ManifestBucketLoggingBucket",
+    "ParameterValue": "<manifest-bucket-logging-bucket-name>"
+  },
+  {
+    "ParameterKey": "ManifestBucketLoggingPrefix",
+    "ParameterValue": "<manifest-bucket-logging-prefix>"
+  }  
+]
+

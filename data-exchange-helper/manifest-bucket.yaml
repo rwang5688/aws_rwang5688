@@ -1,0 +1,67 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Manifest Bucket
+
+Parameters:
+  ManifestBucket:
+    Type: String
+    Description: S3 Bucket name where .manifest files will be stored
+  ManifestBucketLoggingBucket:
+    Type: String
+    Description: Bucket to store server access logs associated with the manifest bucket
+  ManifestBucketLoggingPrefix:
+    Type: String
+    Description: Prefix location for server access logs associated with the manifest
+      bucket
+
+Resources:
+  DeploymentBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName:
+        Ref: ManifestBucket
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LoggingConfiguration:
+        DestinationBucketName:
+          Ref: ManifestBucketLoggingBucket
+        LogFilePrefix:
+          Ref: ManifestBucketLoggingPrefix
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+        - id: W51
+          reason: There is no logical policy to apply.
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: ManifestBucket
+      PolicyDocument:
+        Statement:
+        - Sid: HttpsOnly
+          Action: '*'
+          Effect: Deny
+          Resource:
+            Fn::Sub: arn:aws:s3:::${DeploymentBucket}/*
+          Principal: '*'
+          Condition:
+            Bool:
+              aws:SecureTransport: 'false'
+
+Outputs:
+  ManifestBucket:
+    Description: Manifest Bucket
+    Value: !Ref DeploymentBucket
+  ManifestBucketArn:
+    Description: Manifest Bucket ARN
+    Value: !GetAtt DeploymentBucket.Arn
