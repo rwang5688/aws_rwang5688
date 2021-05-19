@@ -1,4 +1,7 @@
 #!/bin/bash
+# set env var
+. $DATA_EXCHANGE_HELPER_HOME/scripts/env.sh
+
 PROGRAM=$(basename $0)
 
 usage() {
