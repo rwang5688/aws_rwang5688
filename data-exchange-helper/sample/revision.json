@@ -1,8 +1,8 @@
 {
     "Manifest": {
         "Version":"1.0",
-        "ProductId":"my-product-id",
-        "DatasetId":"my-data-set-id",
+        "ProductId":"<product-id>",
+        "DatasetId":"<data-set-id>",
         "Assets": [
             {
                 "Bucket": "<asset-bucket-name>",
