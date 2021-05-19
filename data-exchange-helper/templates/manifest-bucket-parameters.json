@@ -1,15 +1,15 @@
 [
   {
     "ParameterKey": "ManifestBucket",
-    "ParameterValue": "wangrob-data-exchange-manifest-375205257662-us-east-1"
+    "ParameterValue": "<manifest-bucket-name>"
   },
   {
     "ParameterKey": "ManifestBucketLoggingBucket",
-    "ParameterValue": "wangrob-data-exchange-manifest-375205257662-us-east-1-logs"
+    "ParameterValue": "<manifest-bucket-logging-bucket-name>"
   },
   {
     "ParameterKey": "ManifestBucketLoggingPrefix",
-    "ParameterValue": "s3-access-logs/wangrob-data-exchange-manifest-375205257662-us-east-1/"
+    "ParameterValue": "<manifest-bucket-logging-prefix>"
   }  
 ]
 
