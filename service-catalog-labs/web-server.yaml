@@ -1,13 +1,26 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Web Server in us-east-1
+Description: Web Server
 
 Parameters:
   AmiId:
-    Description: The ID of the AMI.
+    Description: The ID of the latest AMI for the region according to SSM.
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
-    ConstraintDescription: The ID of the AMI.
+    ConstraintDescription: The ID of the latest AMI for the region according to SSM.
     Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+  InstanceType:
+    Description: Instance Type
+    Type: String
+    ConstraintDescription: Instance Type
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - m3.medium
+      - m3.large
+      - m3.xlarge
+      - m3.2xlarge
+    Default: 't2.micro'
   InstanceName:
     Description: EC2 Instance Name (ideally globally unique)
     Type: String
@@ -16,7 +29,6 @@ Parameters:
     Description: SSH KeyPair Name
     Type: 'AWS::EC2::KeyPair::KeyName'
     ConstraintDescription: Provide the name of an existing SSH key pair
-    Default: 'wangrob-ec2-us-east-1'
 
 Resources:
   WSInstanceSG:

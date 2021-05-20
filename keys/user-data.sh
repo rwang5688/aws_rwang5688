@@ -21,6 +21,7 @@ rm -rf CloudWatchMonitoringScripts-1.2.2.zip
 #   Use the commands below to enable memory metrics monitoring in CloudWatch
 #   /home/ec2-user/aws-scripts-mon/mon-put-instance-data.pl --mem-util --verify --verbose
 #   /home/ec2-user/aws-scripts-mon/mon-put-instance-data.pl --mem-util --mem-used --mem-avail
+#   Add the following line to the end of /etc/crontab
 #   */1 * * * * root /home/ec2-user/aws-scripts-mon/mon-put-instance-data.pl --mem-util --mem-used --mem-avail
 
 
