@@ -1,0 +1,23 @@
+[
+  {
+    "ParameterKey": "FunctionName",
+    "ParameterValue": "lambda_function"
+  },
+  {
+    "ParameterKey": "DeploymentBucket",
+    "ParameterValue": "wangrob-lambda-function-deployment"
+  },
+  {
+    "ParameterKey": "DeploymentPackage",
+    "ParameterValue": "lambda_function.zip"
+  },
+  {
+    "ParameterKey": "HandlerFunction",
+    "ParameterValue": "lambda_handler"
+  },
+  {
+    "ParameterKey": "RoleArn",
+    "ParameterValue": "arn:aws:iam::375205257662:role/wangrob-lambda-execution-role"
+  }
+]
+
