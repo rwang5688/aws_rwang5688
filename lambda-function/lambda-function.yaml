@@ -1,0 +1,67 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Lambda Function
+
+Parameters:
+  FunctionName:
+    Description: Function Name
+    Type: String
+    ConstraintDescription: Function Name
+  DeploymentBucket:
+    Description: Deployment Bucket Bame
+    Type: String
+    ConstraintDescription: Deployment Bucket Name
+  DeploymentPackage:
+    Description: Deployment Package Name
+    Type: String
+    ConstraintDescription: Deployment Package Name
+  HandlerFunction:
+    Description: Handler Function Name
+    Type: String
+    ConstraintDescription: Handler Function Name
+  RoleArn:
+    Description: Role ARN
+    Type: String
+    ConstraintDescription: Role ARN
+
+Resources:
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref FunctionName
+      Code:
+        S3Bucket: !Ref DeploymentBucket
+        S3Key: !Ref DeploymentPackage
+      Handler: !Join
+        - "."
+        - - !Ref FunctionName
+          - !Ref HandlerFunction
+      Role: !Ref RoleArn
+      Runtime: python3.8
+      Timeout: 5
+      TracingConfig:
+        Mode: Active
+
+  HttpApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Sub ${FunctionName}-api
+      Description: Lambda proxy using quick create
+      ProtocolType: HTTP
+      Target: !Join
+        - ''
+        - - 'arn:'
+          - !Ref 'AWS::Partition'
+          - ':apigateway:'
+          - !Ref 'AWS::Region'
+          - ':lambda:path/2015-03-31/functions/'
+          - !GetAtt LambdaFunction.Arn
+          - /invocations
+
+Outputs:
+  LambdaFunctionArn:
+    Description: Lambda Function ARN
+    Value: !GetAtt LambdaFunction.Arn
+  HttpApiEndpoint:
+    Description: HTTP API Endpoint
+    Value: !GetAtt HttpApi.ApiEndpoint
+
