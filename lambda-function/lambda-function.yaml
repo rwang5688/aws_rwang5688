@@ -1,67 +1,137 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Description: Lambda Function
+AWSTemplateFormatVersion: 2010-09-09
+Description: Lambda Function and REST API Template
 
 Parameters:
-  FunctionName:
-    Description: Function Name
+  LambdaFunctionName:
+    Description: Lambda Function Name
     Type: String
-    ConstraintDescription: Function Name
-  DeploymentBucket:
+    ConstraintDescription: Lambda Function Name
+    AllowedPattern: "[a-zA-Z0-9]+[a-zA-Z0-9-]+[a-zA-Z0-9]+"
+    Default: lambda-function
+  LambdaFunctionDeploymentBucket:
     Description: Deployment Bucket Bame
     Type: String
     ConstraintDescription: Deployment Bucket Name
-  DeploymentPackage:
+  LambdaFunctionDeploymentPackage:
     Description: Deployment Package Name
     Type: String
     ConstraintDescription: Deployment Package Name
-  HandlerFunction:
-    Description: Handler Function Name
+  LambdaFunctionHandler:
+    Description: Lambda Function Handler (Entry Point)
     Type: String
-    ConstraintDescription: Handler Function Name
-  RoleArn:
-    Description: Role ARN
+    ConstraintDescription: Lambda Function Handler (Entry Point)
+    Default: lambda_function.lambda_handler
+  RestApiName:
+    Description: REST API Name
     Type: String
-    ConstraintDescription: Role ARN
+    ConstraintDescription: REST API Name
+    Default: lambda-function-api
+  RestApiMethodName:
+    Description: REST API Method Name
+    Type: String
+    ConstraintDescription: REST API Method Name
+    AllowedValues:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+    Default: GET
+  RestApiStageName:
+    Description: REST API Stage Name
+    Type: String
+    ConstraintDescription: REST API Stage Name
+    AllowedValues:
+      - dev
+      - test
+      - staging
+      - prod
+    Default: dev
 
 Resources:
+  LambdaIamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  LambdaLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${LambdaFunctionName}
+      RetentionInDays: 90
+
   LambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: !Ref FunctionName
+      FunctionName: !Ref LambdaFunctionName
       Code:
-        S3Bucket: !Ref DeploymentBucket
-        S3Key: !Ref DeploymentPackage
-      Handler: !Join
-        - "."
-        - - !Ref FunctionName
-          - !Ref HandlerFunction
-      Role: !Ref RoleArn
+        S3Bucket: !Ref LambdaFunctionDeploymentBucket
+        S3Key: !Ref LambdaFunctionDeploymentPackage
+      Description: Lambda Function
+      Handler: !Ref LambdaFunctionHandler
+      MemorySize: 128
+      Role: !GetAtt LambdaIamRole.Arn
       Runtime: python3.8
       Timeout: 5
       TracingConfig:
         Mode: Active
 
-  HttpApi:
-    Type: AWS::ApiGatewayV2::Api
+  RestApi:
+    Type: AWS::ApiGateway::RestApi
     Properties:
-      Name: !Sub ${FunctionName}-api
-      Description: Lambda proxy using quick create
-      ProtocolType: HTTP
-      Target: !Join
-        - ''
-        - - 'arn:'
-          - !Ref 'AWS::Partition'
-          - ':apigateway:'
-          - !Ref 'AWS::Region'
-          - ':lambda:path/2015-03-31/functions/'
-          - !GetAtt LambdaFunction.Arn
-          - /invocations
+      Description: REST API
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      Name: !Ref RestApiName
+
+  RestApiMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: !Ref RestApiMethodName
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri: !Sub
+          - arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunctionArn}/invocations
+          - LambdaFunctionArn: !GetAtt LambdaFunction.Arn
+      ResourceId: !GetAtt RestApi.RootResourceId
+      RestApiId: !Ref RestApi
+
+  RestApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - RestApiMethod
+    Properties:
+      RestApiId: !Ref RestApi
+      StageName: !Ref RestApiStageName
+
+  LambdaApiGatewayInvoke:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LambdaFunction.Arn
+      Principal: apigateway.amazonaws.com
+      # note: if route *not* at API Gateway root, `SourceArn` would take the form of:
+      #               arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/${RestApiStageName}/${RestApiMethodName}/PATH_PART
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/${RestApiStageName}/${RestApiMethodName}/
 
 Outputs:
   LambdaFunctionArn:
     Description: Lambda Function ARN
     Value: !GetAtt LambdaFunction.Arn
-  HttpApiEndpoint:
-    Description: HTTP API Endpoint
-    Value: !GetAtt HttpApi.ApiEndpoint
+
+  RestApiInvokeURL:
+    Description: REST API Invoke URL
+    Value: !Sub https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${RestApiStageName}
 

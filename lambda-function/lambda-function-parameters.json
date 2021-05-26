@@ -1,23 +1,31 @@
 [
   {
-    "ParameterKey": "FunctionName",
-    "ParameterValue": "lambda_function"
+    "ParameterKey": "LambdaFunctionName",
+    "ParameterValue": "lambda-function"
   },
   {
-    "ParameterKey": "DeploymentBucket",
+    "ParameterKey": "LambdaFunctionDeploymentBucket",
     "ParameterValue": "wangrob-lambda-function-deployment"
   },
   {
-    "ParameterKey": "DeploymentPackage",
+    "ParameterKey": "LambdaFunctionDeploymentPackage",
     "ParameterValue": "lambda_function.zip"
   },
   {
-    "ParameterKey": "HandlerFunction",
-    "ParameterValue": "lambda_handler"
+    "ParameterKey": "LambdaFunctionHandler",
+    "ParameterValue": "lambda_function.lambda_handler"
   },
   {
-    "ParameterKey": "RoleArn",
-    "ParameterValue": "arn:aws:iam::375205257662:role/wangrob-lambda-execution-role"
+    "ParameterKey": "RestApiName",
+    "ParameterValue": "lambda-function-api"
+  },
+  {
+    "ParameterKey": "RestApiMethodName",
+    "ParameterValue": "GET"
+  },
+  {
+    "ParameterKey": "RestApiStageName",
+    "ParameterValue": "dev"
   }
 ]
 
