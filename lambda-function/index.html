@@ -5,10 +5,10 @@
 				var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function() {
 					if (this.readyState == 4 && this.status == 200) {
-						document.getElementById("my-demo").innerHTML = this.responseText;
+						document.getElementById("lambda-function-test").innerHTML = this.responseText;
 					}
 				};
-				xhttp.open("GET", "MY_API_GATEWAY_ENDPOINT_URL", true);
+				xhttp.open("GET", "https://a7dywutvdh.execute-api.us-east-1.amazonaws.com/lambda_function", true);
 				xhttp.send();
 			}
 		</script>
@@ -19,7 +19,7 @@
 		<br>
 		<br>
 		<br>
-		<h1><span id="my-demo">Hello Cloud Gurus!</span></h1>
+		<h1><span id="lambda-function-test">Hello Cloud Gurus!</span></h1>
 		<button onclick="myFunction()">Click me</button>	
 	</div>
 	</body>
