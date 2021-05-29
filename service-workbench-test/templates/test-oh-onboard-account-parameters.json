@@ -1,0 +1,43 @@
+[
+  {
+    "ParameterKey": "Namespace",
+    "ParameterValue": "test"
+  },
+  {
+    "ParameterKey": "RegionShortName",
+    "ParameterValue": "oh"
+  },
+  {
+    "ParameterKey": "CentralAccountId",
+    "ParameterValue": "375205257662"
+  },
+  {
+    "ParameterKey": "ExternalId",
+    "ParameterValue": "workbench"
+  },
+  {
+    "ParameterKey": "VpcCidr",
+    "ParameterValue": "10.0.0.0/16"
+  },
+  {
+    "ParameterKey": "VpcPublicSubnet1Cidr",
+    "ParameterValue": "10.0.0.0/19"
+  },
+  {
+    "ParameterKey": "ApiHandlerArn",
+    "ParameterValue": "arn:aws:iam::375205257662:role/test-oh-sw-ApiHandler"
+  },
+  {
+    "ParameterKey": "WorkflowRoleArn",
+    "ParameterValue": "arn:aws:iam::375205257662:role/test-oh-sw-WorkflowLoopRunner"
+  },
+  {
+    "ParameterKey": "LaunchConstraintRolePrefix",
+    "ParameterValue": "*"
+  },
+  {
+    "ParameterKey": "LaunchConstraintPolicyPrefix",
+    "ParameterValue": "*"
+  }  
+]
+
