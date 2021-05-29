@@ -7,6 +7,10 @@ Parameters:
     Type: String
     Description: An environment name that will be prefixed to resource names
 
+  RegionShortName:
+    Type: String
+    Description: Region short name as defined under main/config/settings/.default.yml
+
   CentralAccountId:
     Type: String
     Description: The account id of the main AWS account where the solution is deployed.
@@ -20,6 +24,13 @@ Parameters:
     Type: String
     Default: 10.0.0.0/16
 
+  # Generous subnet allocation of 8192 addresses (ie room for a few concurrent EMR clusters)
+  # ending at 10.0.31.255
+  VpcPublicSubnet1Cidr:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the 1st Availability Zone
+    Type: String
+    Default: 10.0.0.0/19
+
   ApiHandlerArn:
     Type: String
     Description: The arn of apiHandler role
@@ -27,13 +38,6 @@ Parameters:
   WorkflowRoleArn:
     Type: String
     Description: The arn of workflowRunner role
-
-  # Generous subnet allocation of 8192 addresses (ie room for a few concurrent EMR clusters)
-  # ending at 10.0.31.255
-  VpcPublicSubnet1Cidr:
-    Description: Please enter the IP range (CIDR notation) for the public subnet in the 1st Availability Zone
-    Type: String
-    Default: 10.0.0.0/19
 
   LaunchConstraintRolePrefix:
     Description: Role name prefix to use when creating a launch constraint role in the on-boarded account
@@ -72,7 +76,7 @@ Resources:
   CrossAccountRoleEnvMgmt:
     Type: 'AWS::IAM::Role'
     Properties:
-      RoleName: !Join ['-', [Ref: Namespace, 'xacc-env-mgmt']]
+      RoleName: !Join ['-', [Ref: Namespace, Ref: RegionShortName, 'xacc-env-mgmt']]
       Path: '/'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -291,7 +295,7 @@ Resources:
   CrossAccountExecutionRole:
     Type: 'AWS::IAM::Role'
     Properties:
-      RoleName: !Join ['-', [Ref: Namespace, 'cross-account-role']]
+      RoleName: !Join ['-', [Ref: Namespace, Ref: RegionShortName, 'cross-account-role']]
       Path: '/'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -405,7 +409,7 @@ Resources:
   EncryptionKeyAlias:
     Type: AWS::KMS::Alias
     Properties:
-      AliasName: !Join ['', ['alias/', Ref: Namespace, '-encryption-key']]
+      AliasName: !Join ['', ['alias/', Ref: Namespace, '-', Ref: RegionShortName, '-encryption-key']]
       TargetKeyId: !Ref EncryptionKey
 
 Outputs:
@@ -428,3 +432,4 @@ Outputs:
   EncryptionKeyArn:
     Description: KMS Encryption Key Arn
     Value: !GetAtt [EncryptionKey, Arn]
+
