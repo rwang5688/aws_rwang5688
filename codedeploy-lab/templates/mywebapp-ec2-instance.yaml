@@ -1,0 +1,136 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: EC2 instance for MyWebApp
+
+Parameters:
+  AppName:
+    Description: Application name
+    Type: String
+    ConstraintDescription: Application name
+    Default: 'mywebapp'
+  ImageId:
+    Description: Latest AMI Id for the region according to SSM
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    ConstraintDescription: Latest AMI Id for the region according to SSM
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+  InstanceType:
+    Description: Allowable instance type
+    Type: String
+    ConstraintDescription: Allowable instance type
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t3.micro
+      - t3.small
+    Default: 't2.micro'
+  KeyPairName:
+    Description: SSH KeyPair Name
+    Type: 'AWS::EC2::KeyPair::KeyName'
+    ConstraintDescription: Provide the name of an existing SSH key pair
+    Default: 'wangrob-ec2-us-east-2'
+
+Resources:
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub ${AppName}-sg
+      GroupDescription: !Sub '${AppName} Security Group'
+      Tags:
+        - Key: Name
+          Value: !Sub ${AppName}-sg
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+        Description: 'HTTP IPv4'
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIpv6: ::/0
+        Description: 'HTTP IPv6'
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+        Description: 'HTTPS IPv4'
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIpv6: ::/0
+        Description: 'HTTPS IPv6'
+
+  Ec2InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2008-10-17'
+        Statement:
+        - Sid: ''
+          Effect: Allow
+          Principal:
+            Service: ec2.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+      - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      - arn:aws:iam::aws:policy/AmazonS3FullAccess
+  IamInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+      - Ref: Ec2InstanceRole
+
+  Ec2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref ImageId
+      InstanceType: !Ref InstanceType
+      IamInstanceProfile: !Ref IamInstanceProfile
+      Tags:
+        - Key: AppName
+          Value: !Ref AppName
+        - Key: Name
+          Value: !Sub ${AppName}-ec2-01
+      SecurityGroupIds:
+        - Ref: SecurityGroup
+      KeyName: !Ref KeyPairName
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          # Print out timestamp
+          cd /home/ec2-user/
+          whoami > whoami.txt
+          date > timestamps.txt
+          # Update OS
+          sudo yum update -y
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
+          # Install CodeDeploy agent on your EC2 instance:
+          sudo yum install -y ruby
+          sudo yum install -y wget
+          cd /home/ec2-user
+          wget https://aws-codedeploy-us-east-2.s3.amazonaws.com/latest/install
+          chmod +x ./install
+          sudo ./install auto
+          sudo service codedeploy-agent status > codedeploy-agent-status.txt
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
+          # install CloudWatch monitoring scripts
+          yum install -y perl-Switch perl-DateTime perl-Sys-Syslog perl-LWP-Protocol-https perl-Digest-SHA.x86_64
+          curl https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip -O
+          unzip CloudWatchMonitoringScripts-1.2.2.zip
+          rm -rf CloudWatchMonitoringScripts-1.2.2.zip
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
+
+Outputs: 
+  InstanceID:
+    Description: EC2 Instance ID
+    Value: !Ref Ec2Instance
+  PublicIp:
+    Description: EC2 Public IP
+    Value: !GetAtt Ec2Instance.PublicIp
