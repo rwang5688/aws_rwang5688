@@ -20,7 +20,7 @@ phases:
     - echo Logging in to Amazon ECR.... 
     - aws --version
     # update the following line with your own region
-    #- $(aws ecr get-login --no-include-email --region us-east-2) 
+    #- $(aws ecr get-login --no-include-email --region eu-west-1) 
     - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 375205257662.dkr.ecr.us-east-2.amazonaws.com
   build: 
     commands: 
