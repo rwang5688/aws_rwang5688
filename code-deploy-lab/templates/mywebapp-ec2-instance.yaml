@@ -25,8 +25,12 @@ Parameters:
     AllowedValues:
       - t2.micro
       - t2.small
+      - t2.medium
+      - t2.large
       - t3.micro
       - t3.small
+      - t3.medium
+      - t3.large
     Default: 't2.micro'
   KeyPairName:
     Description: SSH KeyPair Name
