@@ -13,6 +13,11 @@ Parameters:
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     ConstraintDescription: Latest AMI Id for the region according to SSM
     Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+  InstanceName:
+    Description: Instance name
+    Type: String
+    ConstraintDescription: Instance name
+    Default: 'mywebapp-ec2-01'
   InstanceType:
     Description: Allowable instance type
     Type: String
@@ -91,7 +96,7 @@ Resources:
         - Key: AppName
           Value: !Ref AppName
         - Key: Name
-          Value: !Sub ${AppName}-ec2-01
+          Value: !Ref InstanceName
       SecurityGroupIds:
         - Ref: SecurityGroup
       KeyName: !Ref KeyPairName
@@ -104,6 +109,15 @@ Resources:
           date > timestamps.txt
           # Update OS
           sudo yum update -y
+          # Print out timestamp
+          cd /home/ec2-user/
+          date >> timestamps.txt
+          # install and start Apache
+          yum install -y httpd
+          cd /var/www/html
+          echo "<html><h1>Hello World from App=${AppName} Instance=${InstanceName}!!!</h1></html>" > index.html
+          service httpd start
+          chkconfig httpd on
           # Print out timestamp
           cd /home/ec2-user/
           date >> timestamps.txt
