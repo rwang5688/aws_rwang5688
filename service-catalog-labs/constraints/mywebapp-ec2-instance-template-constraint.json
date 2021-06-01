@@ -1,0 +1,18 @@
+{
+    "Rules": {
+      "Rule1": {
+        "Assertions": [
+          {
+            "Assert" : {
+                "Fn::Contains": [
+                    ["t2.micro", "t2.small", "t3.micro", "t3.small"], 
+                    {"Ref": "InstanceType"}
+                ]
+            },
+            "AssertDescription": "Instance size should micro or small."
+          }
+        ]
+      }
+    }
+}
+
