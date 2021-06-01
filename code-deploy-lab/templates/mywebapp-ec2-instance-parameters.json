@@ -4,6 +4,10 @@
     "ParameterValue": "mywebapp"
   },
   {
+    "ParameterKey": "InstanceName",
+    "ParameterValue": "mywebapp-ec2-01"
+  },
+  {
     "ParameterKey": "InstanceType",
     "ParameterValue": "t2.micro"
   },

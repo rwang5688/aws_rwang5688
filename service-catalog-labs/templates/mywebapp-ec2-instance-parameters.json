@@ -1,0 +1,19 @@
+[
+  {
+    "ParameterKey": "AppName",
+    "ParameterValue": "mywebapp"
+  },
+  {
+    "ParameterKey": "InstanceName",
+    "ParameterValue": "mywebapp-ec2-01"
+  },
+  {
+    "ParameterKey": "InstanceType",
+    "ParameterValue": "t2.micro"
+  },
+  {
+    "ParameterKey": "KeyPairName",
+    "ParameterValue": "wangrob-ec2-us-east-2"
+  }
+]
+
