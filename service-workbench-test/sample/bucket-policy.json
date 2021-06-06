@@ -1,0 +1,64 @@
+{
+    "Version": "2012-10-17",
+    "Id": "Policy1622789766192",
+    "Statement": [
+        {
+            "Sid": "AllowCrossAccountRoleAccess",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::986730233475:role/rhw5688EC2"
+            },
+            "Action": [
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:PutObject",
+                "s3:PutObjectAcl"
+            ],
+            "Resource": [
+                "arn:aws:s3:::rwang5688-us-east-2-bucket",
+                "arn:aws:s3:::rwang5688-us-east-2-bucket/*"
+            ]
+        },
+        {
+            "Sid": "DenyUnencryptedObjectUploads",
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": [
+              "s3:PutObject"
+            ],
+            "Resource": "arn:aws:s3:::rwang5688-us-east-2-bucket/*",
+            "Condition": {
+              "StringNotEquals": {
+                "s3:x-amz-server-side-encryption": "aws:kms"
+              }
+            }
+        },
+        {
+            "Sid": "DenyWrongKMSKey",
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": [
+              "s3:PutObject"
+            ],
+            "Resource": "arn:aws:s3:::rwang5688-us-east-2-bucket/*",
+            "Condition": {
+              "StringNotEquals": {
+                "s3:x-amz-server-side-encryption-aws-kms-key-id": "arn:aws:kms:us-east-2:700702834148:key/038ab465-90c1-4456-bbbb-f45a137323b1"
+              }
+            }
+        },
+        {
+            "Sid": "DenyNotHTTPS",
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::rwang5688-us-east-2-bucket/*",
+            "Condition": {
+              "Bool": {
+                "aws:SecureTransport": "false"
+              }
+            }
+        }
+    ]
+}
+

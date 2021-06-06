@@ -1,0 +1,31 @@
+[
+  {
+    "ParameterKey": "InstanceType",
+    "ParameterValue": "t3.large"
+  },
+  {
+    "ParameterKey": "PrimaryNodeLabel",
+    "ParameterValue": "walabs-primary"
+  },
+  {
+    "ParameterKey": "MetricAggregationInterval",
+    "ParameterValue": "10"
+  },
+  {
+    "ParameterKey": "MetricCollectionInterval",
+    "ParameterValue": "5"
+  },
+  {
+    "ParameterKey": "KeyPair",
+    "ParameterValue": "wangrob-ec2-us-east-1"
+  },
+  {
+    "ParameterKey": "InstanceSecurityGroup",
+    "ParameterValue": "sg-6176cd69"
+  },
+  {
+    "ParameterKey": "InstanceSubnetId",
+    "ParameterValue": "subnet-e476e7c5"
+  }
+]
+
