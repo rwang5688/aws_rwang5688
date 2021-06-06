@@ -6,7 +6,7 @@ RUN apt update -y
 RUN apt install -y apache2
 
 # Install apache and write hello world message
-RUN echo "Hello World from my Docker container!!! (v1 deployed by CloudPipeline)" > /var/www/html/index.html
+RUN echo "<html><h1>Hello World from my Docker container (v1 deployed by CloudPipeline)!!!</h1></html>" > /var/www/html/index.html
 
 # Configure apache
 RUN a2enmod rewrite
