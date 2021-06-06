@@ -35,10 +35,12 @@ phases:
     - echo Build completed on `date` 
     - echo pushing to repo
     # update the following line with the URI of your own ECR repository
-    - docker push 375205257662.dkr.ecr.us-east-2.amazonaws.com/my-container-repo:latest 
-#artifacts: 
-    # - location 
-    # - location 
+    - docker push 375205257662.dkr.ecr.us-east-2.amazonaws.com/my-container-repo:latest
+    - printf '[{"name":"my-container","imageUri":"375205257662.dkr.ecr.us-east-2.amazonaws.com/my-container-repo:latest"}]' > imagedefinitions.json
+    - cat imagedefinitions.json
+artifacts:
+  files:
+    - imagedefinitions.json
   #discard-paths: yes 
   #base-directory: location 
 #cache: 
