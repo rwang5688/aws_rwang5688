@@ -1,0 +1,390 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: CF for KMS Key creation for Shared service account
+Parameters:
+  project:
+      Description:  project tag must match the account where it is launched. This enables to retrieve from AWS Secrets Manager 1) Okta Advancd server access token to enable ssh into ec2, 2) VPC, subnet and Security group configuration, 3) Qualys agent if at HMS and Endgame agent if at BCH, 4) department tag and 5) group tag
+      Type: String
+      AllowedValues:
+        - 73bdcGenomics
+        - 73bdc
+        - 73cureSc
+        - 73etl
+        - 73monitoring
+        - 73testAccess
+        - 73devOps
+        - 59pl
+        - 59nlp
+        - 59grin
+        - 59gic
+        - 59covidBastion
+        - 59covidAnalysis
+        - 59covid
+        - 59adept
+        - lzprod-network
+        - lzprod-gss
+        - lzprod-nhanes-dev
+        - lzprod-nhanes-prod
+        - lzprod-pmsdn-dev
+        - lzprod-pmsdn-prod
+        - lzprod-neer-dev
+        - lzprod-neer-prod
+        - lzprod-covid-prod
+        - lzprod-galileo-prod
+        - lzprod-galileo-dev
+        - lzprod-curesc-prod
+        - lzprod-curesc-dev
+        - lzprod-ssc-dev
+        - lzprod-ssc-prod
+        - lzprod-bdc-etl-dev
+        - lzprod-bdc-app-dev
+        - lzprod-ludo-tests
+        - lzprod-udn-prod
+        - lzprod-udn-dev
+        - lzprod-celehs-core
+        - bch-pl-lzprod-allbch-prod
+        - bch-pl-lzprod-allbch-dev
+        - bch-pl-lzprod-gic-prod
+        - bch-pl-lzprod-gic-dev
+        - bch-pl-lzprod-avl-prod
+        - bch-pl-lzprod-avl-dev
+        - bch-pl-lzprod-covid-prod
+        - bch-pl-lzprod-covid-dev
+        - bch-pl-lzprod-rapid19-dev
+        - bch-pl-lzprod-rapid19-prod
+        - bch-pl-lzprod-quest-dev
+        - bch-pl-lzprod-quest-prod
+        - bch-pl-lzprod-swb-dev
+        - bch-pl-lzprod-swb-prod
+        - bch-pl-lzprod-network
+        - bch-pl-lzprod-gss
+        - bch-pl-lzprod-network
+        - 64avl-udn
+        - 68avl-jupyterhub
+        - 68avlQa
+        - 68nhanes
+        - 68ssc
+      Default: bch-pl-lzprod-avl-dev
+  DevAwsAccountNumber:
+    Type: String
+    Default: '302142166944'
+  ProdAwsAccountNumber:
+    Type: String
+    Default: '555035503484'          
+Resources:
+    KmsKeyS3:
+      Type: AWS::KMS::Key
+      Properties:
+        EnableKeyRotation: true
+        KeyPolicy:
+          Version: 2012-10-17
+          Id: !Sub key-${project}-kms-s3
+          Statement:
+            - Sid: Enable IAM User Permissions from Shared account
+              Effect: Allow
+              Principal:
+                AWS: !Join
+                  - ''
+                  - - 'arn:aws:iam::'
+                    - !Ref 'AWS::AccountId'
+                    - ':root'
+              Action: 'kms:*'
+              Resource: '*'
+
+
+            - Sid: Enable IAM User Permissions from Dev account
+              Effect: Allow
+              Principal:
+                AWS:
+                - !Sub arn:aws:iam::${DevAwsAccountNumber}:role/AvillachLabIamInstanceRole
+                - !Sub arn:aws:iam::${DevAwsAccountNumber}:role/rds-s3-integration-role
+                - !Sub '{{resolve:secretsmanager:arn:aws:secretsmanager:us-east-1:718952877825:secret:master-fWTVY2:SecretString:${project}-SSO_Upload-to-s3}}'
+              Action: 
+                - 'kms:Encrypt'
+                - 'kms:Decrypt'
+                - 'kms:ReEncrypt*'
+                - 'kms:GenerateDataKey*'
+                - 'kms:DescribeKey'
+              Resource: '*'
+
+            - Sid: Enable IAM User Permissions from Dev account services
+              Effect: Allow
+              Principal:
+                AWS:
+                - !Sub arn:aws:iam::${DevAwsAccountNumber}:role/AvillachLabIamInstanceRole
+                - !Sub arn:aws:iam::${DevAwsAccountNumber}:role/rds-s3-integration-role
+                - !Sub '{{resolve:secretsmanager:arn:aws:secretsmanager:us-east-1:718952877825:secret:master-fWTVY2:SecretString:${project}-SSO_Upload-to-s3}}'
+
+              Action: 
+                - 'kms:CreateGrant'
+                - 'kms:ListGrants'
+                - 'kms:RevokeGrant'
+              Resource: '*'
+              Condition:
+                Bool: 
+                  'kms:GrantIsForAWSResource': true
+
+            - Sid: Enable IAM User Permissions from PROD account
+              Effect: Allow
+              Principal:
+                AWS:
+                - !Sub arn:aws:iam::${ProdAwsAccountNumber}:role/AvillachLabIamInstanceRole
+                - !Sub arn:aws:iam::${ProdAwsAccountNumber}:role/rds-s3-integration-role
+
+              Action: 
+                - 'kms:Encrypt'
+                - 'kms:Decrypt'
+                - 'kms:ReEncrypt*'
+                - 'kms:GenerateDataKey*'
+                - 'kms:DescribeKey'
+              Resource: '*'
+
+            - Sid: Enable IAM User Permissions from PROD account services
+              Effect: Allow
+              Principal:
+                AWS:
+                - !Sub arn:aws:iam::${ProdAwsAccountNumber}:role/AvillachLabIamInstanceRole
+                - !Sub arn:aws:iam::${ProdAwsAccountNumber}:role/rds-s3-integration-role
+
+              Action: 
+                - 'kms:CreateGrant'
+                - 'kms:ListGrants'
+                - 'kms:RevokeGrant'
+              Resource: '*'
+              Condition:
+                Bool: 
+                  'kms:GrantIsForAWSResource': true
+
+
+
+
+            - Sid: Allow alias creation during setup
+              Effect: Allow
+              Principal:
+                AWS: '*'
+              Action: 'kms:CreateAlias'
+              Resource: '*'
+              Condition:
+                StringEquals:
+                  'kms:ViaService': ec2.region.amazonaws.com
+                  'kms:CallerAccount': !Sub '${AWS::AccountId}'
+
+    KmsKeyS3Alias:
+      Type: AWS::KMS::Alias
+      Properties:
+        AliasName: !Sub alias/${project}-kms-s3
+        TargetKeyId:
+          Ref: KmsKeyS3
+
+
+    KmsKeyEBS:
+      Type: AWS::KMS::Key
+      Properties:
+        EnableKeyRotation: true
+        KeyPolicy:
+          Version: 2012-10-17
+          Id: !Sub key-${project}-kms-ebs
+          Statement:
+            - Sid: Enable IAM User Permissions from Shared account
+              Effect: Allow
+              Principal:
+                AWS: !Join
+                  - ''
+                  - - 'arn:aws:iam::'
+                    - !Ref 'AWS::AccountId'
+                    - ':root'
+              Action: 'kms:*'
+              Resource: '*'
+
+
+            - Sid: Enable IAM User Permissions from Dev account
+              Effect: Allow
+              Principal:
+                AWS: !Join
+                  - ''
+                  - - 'arn:aws:iam::'
+                    - !Ref DevAwsAccountNumber
+                    - ':root'
+              Action: 
+                - 'kms:Encrypt'
+                - 'kms:Decrypt'
+                - 'kms:ReEncrypt*'
+                - 'kms:GenerateDataKey*'
+                - 'kms:DescribeKey'
+              Resource: '*'
+            - Sid: Enable IAM User Permissions from Dev account services
+              Effect: Allow
+              Principal:
+                AWS: !Join
+                  - ''
+                  - - 'arn:aws:iam::'
+                    - !Ref DevAwsAccountNumber
+                    - ':root'
+              Action: 
+                - 'kms:CreateGrant'
+                - 'kms:ListGrants'
+                - 'kms:RevokeGrant'
+              Resource: '*'
+              Condition:
+                Bool: 
+                  'kms:GrantIsForAWSResource': true
+
+            - Sid: Enable IAM User Permissions from PROD account
+              Effect: Allow
+              Principal:
+                AWS: !Join
+                  - ''
+                  - - 'arn:aws:iam::'
+                    - !Ref ProdAwsAccountNumber
+                    - ':root'
+              Action: 
+                - 'kms:Encrypt'
+                - 'kms:Decrypt'
+                - 'kms:ReEncrypt*'
+                - 'kms:GenerateDataKey*'
+                - 'kms:DescribeKey'
+              Resource: '*'
+
+            - Sid: Enable IAM User Permissions from PROD account services
+              Effect: Allow
+              Principal:
+                AWS: !Join
+                  - ''
+                  - - 'arn:aws:iam::'
+                    - !Ref ProdAwsAccountNumber
+                    - ':root'
+              Action: 
+                - 'kms:CreateGrant'
+                - 'kms:ListGrants'
+                - 'kms:RevokeGrant'
+              Resource: '*'
+              Condition:
+                Bool: 
+                  'kms:GrantIsForAWSResource': true
+
+
+
+
+            - Sid: Allow alias creation during setup
+              Effect: Allow
+              Principal:
+                AWS: '*'
+              Action: 'kms:CreateAlias'
+              Resource: '*'
+              Condition:
+                StringEquals:
+                  'kms:ViaService': ec2.region.amazonaws.com
+                  'kms:CallerAccount': !Sub '${AWS::AccountId}'
+
+    KmsKeyEBSAlias:
+      Type: AWS::KMS::Alias
+      Properties:
+        AliasName: !Sub alias/${project}-kms-ebs
+        TargetKeyId:
+          Ref: KmsKeyEBS
+
+
+    KmsKeyRDS:
+      Type: AWS::KMS::Key
+      Properties:
+        EnableKeyRotation: true
+        KeyPolicy:
+          Version: 2012-10-17
+          Id: !Sub key-${project}-kms-rds
+          Statement:
+            - Sid: Enable IAM User Permissions from Shared account
+              Effect: Allow
+              Principal:
+                AWS: !Join
+                  - ''
+                  - - 'arn:aws:iam::'
+                    - !Ref 'AWS::AccountId'
+                    - ':root'
+              Action: 'kms:*'
+              Resource: '*'
+
+
+            - Sid: Enable IAM User Permissions from Dev account
+              Effect: Allow
+              Principal:
+                AWS: !Join
+                  - ''
+                  - - 'arn:aws:iam::'
+                    - !Ref DevAwsAccountNumber
+                    - ':root'
+              Action: 
+                - 'kms:Encrypt'
+                - 'kms:Decrypt'
+                - 'kms:ReEncrypt*'
+                - 'kms:GenerateDataKey*'
+                - 'kms:DescribeKey'
+              Resource: '*'
+            - Sid: Enable IAM User Permissions from Dev account services
+              Effect: Allow
+              Principal:
+                AWS: !Join
+                  - ''
+                  - - 'arn:aws:iam::'
+                    - !Ref DevAwsAccountNumber
+                    - ':root'
+              Action: 
+                - 'kms:CreateGrant'
+                - 'kms:ListGrants'
+                - 'kms:RevokeGrant'
+              Resource: '*'
+              Condition:
+                Bool: 
+                  'kms:GrantIsForAWSResource': true
+
+            - Sid: Enable IAM User Permissions from PROD account
+              Effect: Allow
+              Principal:
+                AWS: !Join
+                  - ''
+                  - - 'arn:aws:iam::'
+                    - !Ref ProdAwsAccountNumber
+                    - ':root'
+              Action: 
+                - 'kms:Encrypt'
+                - 'kms:Decrypt'
+                - 'kms:ReEncrypt*'
+                - 'kms:GenerateDataKey*'
+                - 'kms:DescribeKey'
+              Resource: '*'
+
+            - Sid: Enable IAM User Permissions from PROD account services
+              Effect: Allow
+              Principal:
+                AWS: !Join
+                  - ''
+                  - - 'arn:aws:iam::'
+                    - !Ref ProdAwsAccountNumber
+                    - ':root'
+              Action: 
+                - 'kms:CreateGrant'
+                - 'kms:ListGrants'
+                - 'kms:RevokeGrant'
+              Resource: '*'
+              Condition:
+                Bool: 
+                  'kms:GrantIsForAWSResource': true
+
+
+
+
+            - Sid: Allow alias creation during setup
+              Effect: Allow
+              Principal:
+                AWS: '*'
+              Action: 'kms:CreateAlias'
+              Resource: '*'
+              Condition:
+                StringEquals:
+                  'kms:ViaService': ec2.region.amazonaws.com
+                  'kms:CallerAccount': !Sub '${AWS::AccountId}'
+
+    KmsKeyRDSAlias:
+      Type: AWS::KMS::Alias
+      Properties:
+        AliasName: !Sub alias/${project}-kms-rds
+        TargetKeyId:
+          Ref: KmsKeyRDS

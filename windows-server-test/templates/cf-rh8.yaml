@@ -1,0 +1,84 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  AWS Service Catalog sample template. Creates an Amazon EC2 instance running
+  the Amazon Linux AMI. The AMI is chosen based on the region in which the stack
+  is run. This example lets you select existing subnet, security group and keypair
+  for the instance. 
+  
+Parameters:
+  KeyName:
+    Description: Name of an existing EC2 key pair for SSH access to the EC2 instance.
+    Type: 'AWS::EC2::KeyPair::KeyName'
+    
+  InstanceType:
+    Description: EC2 instance type.
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - m3.medium
+      - m3.large
+      - m3.xlarge
+      - m3.2xlarge
+  
+  NameTag:
+    Description: Name of the EC2 instance.
+    Type: String
+     
+  InstanceSecurityGroup:
+    Description: Select SG for EC2 instance
+    Type: 'List<AWS::EC2::SecurityGroup::Id>'
+    ConstraintDescription: must be the existing SG.
+  
+  InstanceSubnetId:
+    Description: Select Subnet in which EC2 instance needs to be deployed
+    Type: 'List<AWS::EC2::Subnet::Id>'
+    ConstraintDescription: must be the existing subnet.
+
+Metadata:
+  'AWS::CloudFormation::Interface':
+    ParameterGroups:
+      - Label:
+          default: Instance configuration
+        Parameters:
+          - InstanceType
+      - Label:
+          default: Security configuration
+        Parameters:
+          - KeyName
+    ParameterLabels:
+      InstanceType:
+        default: 'Server size:'
+      KeyName:
+        default: 'Key pair:'
+
+Mappings:
+  AWSRegionArch2AMI:
+    us-east-1:
+      HVM64: ami-0b46cbf9f7311014e
+
+Resources:
+  EC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: !Ref InstanceType
+      SubnetId: !Join 
+          - ','
+          - !Ref InstanceSubnetId
+      SecurityGroupIds: !Ref InstanceSecurityGroup
+      KeyName: !Ref KeyName
+      ImageId: !FindInMap 
+        - AWSRegionArch2AMI
+        - !Ref 'AWS::Region'
+        - HVM64
+      Tags:
+        - Key: Name
+          Value: !Ref NameTag 
+   
+
+Outputs:
+  InstanceId:
+    Description: InstanceId of the newly created EC2 instance
+    Value: !Ref EC2Instance	  
