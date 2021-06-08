@@ -1,0 +1,35 @@
+[
+  {
+    "ParameterKey": "ProjectName",
+    "ParameterValue": "wangrob-virtual-flow"
+  },
+  {
+    "ParameterKey": "AllocationStrategy",
+    "ParameterValue": "SPOT_CAPACITY_OPTIMIZED"
+  },
+  {
+    "ParameterKey": "CEInstanceTypes",
+    "ParameterValue": "c5.4xlarge"
+  },
+  {
+    "ParameterKey": "CEType",
+    "ParameterValue": "SPOT"
+  },
+  {
+    "ParameterKey": "CEvCPUs",
+    "ParameterValue": "500"
+  },
+  {
+    "ParameterKey": "KeyName",
+    "ParameterValue": "wangrob-ec2-us-east-1"
+  },
+  {
+    "ParameterKey": "S3BucketName",
+    "ParameterValue": "wangrob-virtual-flow-test-us-east-1"
+  },
+  {
+    "ParameterKey": "VPCStackParameter",
+    "ParameterValue": "vf-vpc"
+  }
+]
+

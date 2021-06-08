@@ -1,0 +1,23 @@
+[
+  {
+    "ParameterKey": "ProjectName",
+    "ParameterValue": "wangrob-virtual-flow"
+  },
+  {
+    "ParameterKey": "VpcCidr0",
+    "ParameterValue": "20.0.0.0/16"
+  },
+  {
+    "ParameterKey": "VpcCidr1",
+    "ParameterValue": "20.1.0.0/16"
+  },
+  {
+    "ParameterKey": "VpcCidr2",
+    "ParameterValue": "20.2.0.0/16"
+  },
+  {
+    "ParameterKey": "VpcCidr3",
+    "ParameterValue": "20.3.0.0/16"
+  }
+]
+
