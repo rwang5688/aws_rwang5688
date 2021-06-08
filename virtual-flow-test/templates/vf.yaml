@@ -195,7 +195,7 @@ Resources:
         - ComputeEnvironment: !Ref BatchComputeEnvironment1
           Order: 1
         - ComputeEnvironment: !Ref BatchComputeEnvironment2
-          Order: 2
+          Order: 1
       JobQueueName: !Sub ${AWS::StackName}-queue1
       Priority: 1
       State: ENABLED
