@@ -1,13 +1,26 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Sample template for launching VirtualFlow in AWS Batch'
 Parameters:
-  VPCStackParameter:
+  ProjectName:
     Type: String
-    Description: Name of the VPC Stack previously deployed
+    Description: Project name for tagging purpose
+  AllocationStrategy:
+    Type: String
+    Default: SPOT_CAPACITY_OPTIMIZED
   AMI:
     Description: Default ECS Optimized AMI (AL2) or your own AMI ID (which needs to be setup for ECS)
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: /aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id
+  CEInstanceTypes:
+    Type: String
+    Default: c5.24xlarge,c5d.24xlarge,c5.18xlarge,c5d.18xlarge,c5n.18xlarge,c5.12xlarge,c5d.12xlarge,c5.4xlarge,c5d.4xlarge,c5n.4xlarge,c5a.24xlarge,c5a.16xlarge,c5a.4xlarge
+  CEType:
+    Type: String
+    Default: SPOT
+  CEvCPUs:
+    Description: Max vCPUs in a single CE
+    Type: Number
+    Default: 500
   KeyName:
     Description: Key name to use for login to main node
     Type: String
@@ -15,21 +28,12 @@ Parameters:
     Description: AMI for the Main Node
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
-  CEvCPUs:
-    Description: Max vCPUs in a single CE
-    Type: Number
-    Default: 500
-  CEInstanceTypes:
+  S3BucketName:
+    Description: Bucket for storing data
     Type: String
-    Default: c5.24xlarge,c5d.24xlarge,c5.18xlarge,c5d.18xlarge,c5n.18xlarge,c5.12xlarge,c5d.12xlarge,c5.4xlarge,c5d.4xlarge,c5n.4xlarge,c5a.24xlarge,c5a.16xlarge,c5a.4xlarge
-  S3BucketName: 
+  VPCStackParameter:
     Type: String
-  AllocationStrategy:
-    Type: String
-    Default: SPOT_CAPACITY_OPTIMIZED
-  CEType:
-    Type: String
-    Default: SPOT
+    Description: Name of the VPC Stack previously deployed
 
 Resources:
 
@@ -183,7 +187,7 @@ Resources:
         ImageId: !Ref AMI
 
   ## Create the job queue and attach to the CE
-
+  ## Normal accounts: Set BatchComputeEnvironment2's Order to 2
   BatchJobQueue1:
     Type: AWS::Batch::JobQueue
     Properties:
@@ -191,7 +195,7 @@ Resources:
         - ComputeEnvironment: !Ref BatchComputeEnvironment1
           Order: 1
         - ComputeEnvironment: !Ref BatchComputeEnvironment2
-          Order: 1
+          Order: 2
       JobQueueName: !Sub ${AWS::StackName}-queue1
       Priority: 1
       State: ENABLED
@@ -260,6 +264,9 @@ Resources:
            DeleteOnTermination: True
            VolumeSize: 8192
            VolumeType: gp2
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-main-node'
       UserData:
          Fn::Base64: !Sub |
                 Content-Type: multipart/mixed; boundary="===============1409001372156971182=="
