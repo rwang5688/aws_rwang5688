@@ -1,0 +1,239 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >-
+  This template deploys Windows Server. 
+  **WARNING** This template creates Amazon EC2 Windows instance and related resources.
+  You will be billed for the AWS resources used if you create a stack from this template.
+  
+Parameters:
+  CreatedBy:
+    Description: "The technician that deployed the EC2"
+    Type: String
+  KeyName:
+    Description: Name of an existing EC2 KeyPair
+    Type: 'AWS::EC2::KeyPair::KeyName'
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+
+  InstanceAMI:
+    Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    # Default: '/aws/service/ami-windows-latest/Windows_Server-2016-English-Full-Base' #2016
+    Default: '/aws/service/ami-windows-latest/Windows_Server-2019-English-Full-Base'
+  InstanceName:
+    Description: "Name of the EC2 instance"
+    Type: String
+    MinLength: "1"
+    MaxLength: "15"
+  InstanceSecurityGroup:
+    Description: Select SG for EC2 instance
+    Type: 'List<AWS::EC2::SecurityGroup::Id>'
+    ConstraintDescription: must be the existing SG.
+  
+  InstanceSubnetId:
+    Description: Select Subnet in which EC2 instance needs to be deployed
+    Type: 'List<AWS::EC2::Subnet::Id>'
+    ConstraintDescription: must be the existing subnet.
+  InstanceType:
+    Description: Amazon EC2 instance type
+    Type: String
+    Default: t3.large
+    AllowedValues:
+      - t2.medium
+      - t2.large
+      - t2.xlarge
+      - t3.medium
+      - t3.large
+      - t3.xlarge
+      - m4.large
+      - m4.xlarge
+      - m5.large
+      - m5.xlarge
+
+    ConstraintDescription: must be a valid EC2 instance type.
+
+Metadata:
+  'AWS::CloudFormation::Interface':
+    ParameterGroups:
+      - Label:
+          default: Instance configuration
+        Parameters:
+          - InstanceName
+          - InstanceType
+          - CreatedBy
+      - Label:
+          default: Security configuration
+        Parameters:
+          - KeyName
+    ParameterLabels:
+      InstanceType:
+        default: 'Server size:'
+      KeyName:
+        default: 'Key pair:'
+        
+
+Resources:
+  InstanceRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+  RolePolicies:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: AmazonS3ReadOnlyAccess
+      PolicyDocument:
+        Statement:
+          - Action:
+              - 's3:GetObject'
+            Effect: Allow
+            Resource: 'arn:aws:s3:::bch-nos-software/Mcafee/FramePkg.exe'
+      Roles:
+        - Ref: InstanceRole
+  InstanceProfile:
+    Type: 'AWS::IAM::InstanceProfile'
+    Properties:
+      Path: /
+      Roles:
+        - Ref: InstanceRole
+  WindowsServer:
+    Type: 'AWS::EC2::Instance'
+    Metadata:
+      'AWS::CloudFormation::Authentication':
+        S3AccessCreds:
+          type: S3
+          buckets: bch-nos-software
+          roleName: ec2-s3-read
+      'AWS::CloudFormation::Init':
+        config:
+          files:
+            'c:\cfn\cfn-hup.conf':
+              content:
+                'Fn::Join':
+                  - ''
+                  - - |
+                      [main]
+                    - stack=
+                    - Ref: 'AWS::StackId'
+                    - |+
+
+                    - region=
+                    - Ref: 'AWS::Region'
+                    - |+
+
+            'c:\cfn\hooks.d\cfn-auto-reloader.conf':
+              content:
+                'Fn::Join':
+                  - ''
+                  - - |
+                      [cfn-auto-reloader-hook]
+                    - |
+                      triggers=post.update
+                    - >
+                      path=Resources.WindowsServer.Metadata.AWS::CloudFormation::Init
+                    - 'action=cfn-init.exe -v -s '
+                    - Ref: 'AWS::StackId'
+                    - ' -r WindowsServer'
+                    - ' --region '
+                    - Ref: 'AWS::Region'
+                    - |+
+            'c:\Tools\computerName.txt':
+              content:
+                !Sub |
+                  ${InstanceName}
+            'c:\Tools\FramePkg.exe':
+              source: "https://bch-nos-software.s3.amazonaws.com/Mcafee/FramePkg.exe"
+                  
+          commands:
+            1-set-time-zone:
+              command:
+                (
+                powershell.exe -command "Set-TimeZone -Name 'Eastern Standard Time'"
+                &&
+                echo set-time-zone - %date%, %time% >>C:\Tools\CFInstall.log && echo. >>C:\Tools\CFInstall.log
+                )
+              waitAfterCompletion: 0
+            2-rename-computer:
+              command:
+                (
+                echo rename-computer - %date%, %time% >>C:\Tools\CFInstall.log && echo. >>C:\Tools\CFInstall.log
+                &&
+                powershell.exe -command "Rename-Computer -NewName ($Computer = Get-Content C:\Tools\computerName.txt)"
+                )
+              waitAfterCompletion: 0
+            3-reboot:
+              command:
+                (
+                echo reboot - %date%, %time% >>C:\Tools\CFInstall.log && echo. >>C:\Tools\CFInstall.log
+                &&
+                powershell.exe -command Restart-Computer
+                )
+              waitAfterCompletion: forever
+            4-write-files:
+              command:
+                (
+                echo write-files - %date%, %time% >>C:\Tools\CFInstall.log && echo. >>C:\Tools\CFInstall.log
+                &&
+                powershell.exe -command "New-Item -Path "C:\Tools\newfile.txt" -ItemType File"
+                )
+              waitAfterCompletion: 0
+            5-signal-success:
+              command:
+                'Fn::Join':
+                  - ''
+                  - - cfn-signal.exe -e %ERRORLEVEL% "
+                    - 'Fn::Base64':
+                        Ref: WindowsServerWaitHandle
+                    - '"'
+                    
+          services:
+            windows:
+              cfn-hup:
+                enabled: 'true'
+                ensureRunning: 'true'
+                files:
+                  - 'c:\cfn\cfn-hup.conf'
+                  - 'c:\cfn\hooks.d\cfn-auto-reloader.conf'                 
+    Properties:
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            DeleteOnTermination: 'true'
+            Encrypted: 'false'
+            VolumeType: 'gp3'
+            VolumeSize: '60'
+      ImageId: !Ref InstanceAMI
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyName
+      SecurityGroupIds: !Ref InstanceSecurityGroup
+      SubnetId: !Join
+          - ','
+          - !Ref InstanceSubnetId
+      Tags:
+        - Key: Name
+          Value: !Ref InstanceName
+        - Key: Hostname
+          Value: !Ref InstanceName
+        - Key: CreatedBy
+          Value: !Ref CreatedBy
+      UserData:
+        "Fn::Base64":
+          !Sub |
+            <script>
+            cfn-init.exe -v -s ${AWS::StackId} -r WindowsServer --region ${AWS::Region}
+            </script>
+
+  WindowsServerWaitHandle:
+    Type: 'AWS::CloudFormation::WaitConditionHandle'
+  WindowsServerWaitCondition:
+    Type: 'AWS::CloudFormation::WaitCondition'
+    DependsOn: WindowsServer
+    Properties:
+      Handle:
+        Ref: WindowsServerWaitHandle
+      Timeout: '900'
+
