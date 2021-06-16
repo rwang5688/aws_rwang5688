@@ -1,0 +1,7 @@
+[
+  {
+    "ParameterKey": "TableNamePrefix",
+    "ParameterValue": "AppSyncTutorial"
+  }
+]
+
