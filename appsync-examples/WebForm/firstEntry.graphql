@@ -1,0 +1,23 @@
+mutation createFirstEntry {
+  createEntry(
+    id: ""
+    webformID: "710143cb-3f77-4e12-b3b6-7c4aaf9ac315"
+    content: "{\"firstname\":\"David\"}"
+  ) {
+    id
+    webformID
+    content
+    createdAt
+    updatedAt
+  }
+}
+
+query getFirstEntry {
+  getPost(id: "${autoId}") {
+    id
+    webformID
+    content
+    createdAt
+    updatedAt
+  }
+}
