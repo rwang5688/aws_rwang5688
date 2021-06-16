@@ -1,0 +1,97 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  TableNamePrefix:
+    Default: AppSyncTutorial-
+    Description: Prefix for the names of the tables created by this template.
+    Type: String
+    MinLength: 0
+    MaxLength: 20
+    AllowedPattern: '^[a-zA-Z][a-zA-Z0-9-_]*$'
+
+Resources:
+
+  ############################
+  # AWS IAM Roles & Policies #
+  ############################
+
+  AppSyncTutorialAmazonDynamoDBRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: AppSyncTutorialAmazonDynamoDBRole
+      ManagedPolicyArns:
+        - Ref: AppSyncTutorialAmazonDynamoDBPolicy
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Principal:
+              Service:
+                - appsync.amazonaws.com
+    DependsOn:
+      - AppSyncTutorialAmazonDynamoDBPolicy
+
+  AppSyncTutorialAmazonDynamoDBPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Managed policy to allow AWS AppSync to access the tables created by this template.
+      Path: /deepdish/
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+              - dynamodb:DeleteItem
+              - dynamodb:UpdateItem
+              - dynamodb:Query
+              - dynamodb:Scan
+              - dynamodb:BatchGetItem
+              - dynamodb:BatchWriteItem
+            Resource:
+              - Fn::Join:
+                - ""
+                - - Fn::GetAtt: AppSyncTutorialAmazonDynamoDBPostTable.Arn
+                  - "*"
+
+  ##########################
+  # Amazon DynamoDB Tables #
+  ##########################
+
+  AppSyncTutorialAmazonDynamoDBPostTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: author
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      TableName:
+        Fn::Sub: "${TableNamePrefix}Post"
+      GlobalSecondaryIndexes:
+        - IndexName: author-index
+          KeySchema:
+            - AttributeName: author
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+
+Outputs:
+  AppSyncTutorialAmazonDynamoDBRole:
+    Description: The IAM Role ARN that AWS Appsync will assume when interacting with Amazon DynamoDB.
+    Value: !GetAtt AppSyncTutorialAmazonDynamoDBRole.Arn
+  AppSyncTutorialAmazonDynamoDBPostTable:
+    Description: The name of the Amazon DynamoDB table containing post data.
+    Value: !Ref AppSyncTutorialAmazonDynamoDBPostTable
