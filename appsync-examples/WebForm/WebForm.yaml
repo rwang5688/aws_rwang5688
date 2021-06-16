@@ -1,0 +1,97 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  TableNamePrefix:
+    Default: WebForm
+    Description: Prefix for the names of the tables created by this template.
+    Type: String
+    MinLength: 0
+    MaxLength: 20
+    AllowedPattern: '^[a-zA-Z][a-zA-Z0-9-_]*$'
+
+Resources:
+
+  ############################
+  # AWS IAM Roles & Policies #
+  ############################
+
+  WebFormAmazonDynamoDBRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: WebFormAmazonDynamoDBRole
+      ManagedPolicyArns:
+        - Ref: WebFormAmazonDynamoDBPolicy
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Principal:
+              Service:
+                - appsync.amazonaws.com
+    DependsOn:
+      - WebFormAmazonDynamoDBPolicy
+
+  WebFormAmazonDynamoDBPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Managed policy to allow AWS AppSync to access the tables created by this template.
+      Path: /deepdish/
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+              - dynamodb:DeleteItem
+              - dynamodb:UpdateItem
+              - dynamodb:Query
+              - dynamodb:Scan
+              - dynamodb:BatchGetItem
+              - dynamodb:BatchWriteItem
+            Resource:
+              - Fn::Join:
+                - ""
+                - - Fn::GetAtt: WebFormAmazonDynamoDBEntryTable.Arn
+                  - "*"
+
+  ##########################
+  # Amazon DynamoDB Tables #
+  ##########################
+
+  WebFormAmazonDynamoDBEntryTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: webformID
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      TableName:
+        Fn::Sub: "${TableNamePrefix}Entry"
+      GlobalSecondaryIndexes:
+        - IndexName: webformID-index
+          KeySchema:
+            - AttributeName: webformID
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+
+Outputs:
+  WebFormAmazonDynamoDBRole:
+    Description: The IAM Role ARN that AWS Appsync will assume when interacting with Amazon DynamoDB.
+    Value: !GetAtt WebFormAmazonDynamoDBRole.Arn
+  WebFormAmazonDynamoDBEntryTable:
+    Description: The name of the Amazon DynamoDB table containing post data.
+    Value: !Ref WebFormAmazonDynamoDBEntryTable

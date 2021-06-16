@@ -1,0 +1,13 @@
+{
+    "version" : "2017-02-28",
+    "operation" : "PutItem",
+    "key" : {
+        "id": $util.dynamodb.toDynamoDBJson($util.autoId()),
+    },
+    "attributeValues" : {
+        "webformID" : $util.dynamodb.toDynamoDBJson($context.arguments.webformID),
+        "content" : $util.dynamodb.toDynamoDBJson($context.arguments.content),
+        "createdAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601()),
+        "updatedAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601())
+    }
+}

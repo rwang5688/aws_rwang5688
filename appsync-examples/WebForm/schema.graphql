@@ -1,0 +1,24 @@
+﻿schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+    getEntry(id: ID): Entry
+}
+
+type Mutation {
+    createEntry(
+        id: ID!
+        webformID: ID!
+        content: AWSJSON!
+    ): Entry!
+}
+
+type Entry {
+    id: ID!
+    webformID: ID!
+    content: AWSJSON!
+    createdAt: AWSDateTime!
+    updatedAt: AWSDateTime!
+}
