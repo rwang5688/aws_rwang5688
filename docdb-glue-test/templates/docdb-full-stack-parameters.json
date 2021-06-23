@@ -1,0 +1,23 @@
+[
+  {
+    "ParameterKey": "DBAdminUsername",
+    "ParameterValue": "docdbadmin"
+  },
+  {
+    "ParameterKey": "DBAdminUserPassword",
+    "ParameterValue": "iamdocdbadmin"
+  },
+  {
+    "ParameterKey": "DBClusterName",
+    "ParameterValue": "docdb-cluster"
+  },
+  {
+    "ParameterKey": "DBInstanceClass",
+    "ParameterValue": "db.t3.medium"
+  },
+  {
+    "ParameterKey": "DBInstanceName",
+    "ParameterValue": "docdb-instance"
+  }
+]
+
