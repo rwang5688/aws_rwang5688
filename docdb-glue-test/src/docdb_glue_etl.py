@@ -16,12 +16,12 @@ spark = glueContext.spark_session
 job = Job(glueContext)
 job.init(args['JOB_NAME'], args)
 
-output_path = "s3://<bucket>/<folder>/" + str(time.time()) + "/"
-documentdb_uri = "mongodb://<host name>:27017"
-documentdb_write_uri = "mongodb://<host name>:27017"
+output_path = "s3://wangrob-docdb-glue-test-output-us-east-1/jobs/" + str(time.time()) + "/"
+docdb_read_uri = "mongodb://docdb-instance.cht1ctqm99mr.us-east-1.docdb.amazonaws.com:27017"
+docdb_write_uri = "mongodb://docdb-instance.cht1ctqm99mr.us-east-1.docdb.amazonaws.com:27017"
 
 read_docdb_options = {
-    "uri": documentdb_uri,
+    "uri": docdb_read_uri,
     "database": "test",
     "collection": "profiles",
     "username": "<username>",
@@ -33,8 +33,8 @@ read_docdb_options = {
     "partitionerOptions.partitionKey": "_id"
 }
 
-write_documentdb_options = {
-    "uri": documentdb_write_uri,
+write_docdb_options = {
+    "uri": docdb_write_uri,
     "database": "test",
     "collection": "collection1",
     "username": "<username>",
@@ -46,13 +46,28 @@ write_documentdb_options = {
     "partitionerOptions.partitionKey": "_id"
 }
 
+write_s3_options = {
+    "path": output_path
+}
+
 # Get DynamicFrame from DocumentDB
 dynamic_frame2 = glueContext.create_dynamic_frame.from_options(connection_type="documentdb",
                                                                connection_options=read_docdb_options)
 
+print("read dynamic_frame2: %s" % dynamic_frame2)
+
 # Write DynamicFrame to DocumentDB
 glueContext.write_dynamic_frame.from_options(dynamic_frame2, connection_type="documentdb",
-                                             connection_options=write_documentdb_options)
+                                             connection_options=write_docdb_options)
+
+print("wrote collection1 to DocDB")
+
+# Write DynamicFrame to S3
+glueContext.write_dynamic_frame.from_options(dynamic_frame2, connection_type="s3",
+                                             connection_options=write_s3_options,
+                                             format="json")
+
+print("wrote json to S3")
 
 job.commit()
 
