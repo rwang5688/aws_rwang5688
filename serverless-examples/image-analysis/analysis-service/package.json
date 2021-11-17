@@ -10,7 +10,7 @@
   "description": "",
   "dependencies": {
     "async": "^3.2.0",
-    "aws-sdk": "^2.705.0"
+    "aws-sdk": "^2.814.0"
   },
   "devDependencies": {
     "serverless-dotenv-plugin": "^2.4.2"
