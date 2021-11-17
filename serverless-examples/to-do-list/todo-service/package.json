@@ -12,7 +12,7 @@
   "author": "rwang5688@outlook.com",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.709.0",
+    "aws-sdk": "^2.814.0",
     "uuid": "^8.2.0"
   },
   "devDependencies": {
